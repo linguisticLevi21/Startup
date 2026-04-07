@@ -32,7 +32,7 @@ function ApplyForm({ jobId, onClose, onSuccess }) {
         jobId,
       });
 
-      setMessage(`Success! Match Score: ${response.data.matchScore}%`);
+      setMessage(`Success! Application submitted`);
       setTimeout(() => {
         onSuccess();
         onClose();

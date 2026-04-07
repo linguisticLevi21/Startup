@@ -1,7 +1,7 @@
 .map-view {
   display: flex;
   height: 100vh;
-  background: #0b1117;
+  background: #0a0e27;
   overflow: hidden;
 }
 
@@ -24,19 +24,19 @@
 .leaflet-map {
   width: 100%;
   height: 100%;
-  background: #161b22;
+  background: #0f1429;
 }
 
 .leaflet-container {
-  background: #161b22;
+  background: #0f1429;
 }
 
 .leaflet-tile {
-  filter: brightness(0.8) contrast(1.1);
+  filter: brightness(0.6) contrast(1.2) saturate(0.8);
 }
 
 .leaflet-popup-content {
-  color: #0b1117;
+  color: #0a0e27;
   font-weight: 600;
   font-size: 0.85rem;
 }
@@ -44,8 +44,8 @@
 /* RIGHT PANEL */
 .map-right {
   flex: 0 0 30%;
-  background: #0d1117;
-  border-left: 1px solid #30363d;
+  background: #111827;
+  border-left: 1px solid #2d3748;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -53,7 +53,7 @@
 
 .panel-header {
   padding: 1.2rem;
-  border-bottom: 1px solid #30363d;
+  border-bottom: 1px solid #2d3748;
   flex-shrink: 0;
 }
 

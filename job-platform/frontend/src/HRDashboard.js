@@ -7,7 +7,7 @@ function HRDashboard() {
   const [selectedJob, setSelectedJob] = useState(null);
   const [applicants, setApplicants] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [sortBy, setSortBy] = useState("matchScore"); // 'matchScore' or 'experience'
+  const [sortBy, setSortBy] = useState("experience"); // Sort by experience only
 
   useEffect(() => {
     fetchJobs();
@@ -35,11 +35,7 @@ function HRDashboard() {
   };
 
   const getSortedApplicants = () => {
-    if (sortBy === "matchScore") {
-      return [...applicants].sort((a, b) => b.matchScore - a.matchScore);
-    } else {
-      return [...applicants].sort((a, b) => b.experience - a.experience);
-    }
+    return [...applicants].sort((a, b) => b.experience - a.experience);
   };
 
   if (loading) return <div className="loading">Loading HR Dashboard...</div>;
@@ -75,16 +71,6 @@ function HRDashboard() {
             <>
               <div className="section-header">
                 <h2>{selectedJob.title} - Applicants</h2>
-                <div className="sort-controls">
-                  <label>Sort by:</label>
-                  <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                  >
-                    <option value="matchScore">Match Score</option>
-                    <option value="experience">Experience</option>
-                  </select>
-                </div>
               </div>
 
               {applicants.length === 0 ? (
@@ -97,14 +83,6 @@ function HRDashboard() {
                         <div>
                           <h3>{applicant.name}</h3>
                           <p className="email">{applicant.email}</p>
-                        </div>
-                        <div className="match-score">
-                          <span
-                            className={`score ${applicant.matchScore >= 70 ? "high" : applicant.matchScore >= 40 ? "medium" : "low"}`}
-                          >
-                            {applicant.matchScore}%
-                          </span>
-                          <p>Match</p>
                         </div>
                       </div>
 

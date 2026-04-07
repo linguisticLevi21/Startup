@@ -30,8 +30,7 @@ router.get("/jobs/:id/applicants", async (req, res) => {
     const job = await Job.findById(req.params.id);
     if (!job) return res.status(404).json({ error: "Job not found" });
 
-    const sorted = job.applicants.sort((a, b) => b.matchScore - a.matchScore);
-    res.json(sorted);
+    res.json(job.applicants);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -49,24 +48,15 @@ router.post("/apply", async (req, res) => {
     const job = await Job.findById(jobId);
     if (!job) return res.status(404).json({ error: "Job not found" });
 
-    // Calculate match score
     const skillsArray = Array.isArray(skills)
       ? skills
       : skills.split(",").map((s) => s.trim());
-    const matchingSkills = skillsArray.filter((skill) =>
-      job.tags.some((tag) => tag.toLowerCase().includes(skill.toLowerCase())),
-    ).length;
-    const matchScore =
-      job.tags.length > 0
-        ? Math.round((matchingSkills / job.tags.length) * 100)
-        : 0;
 
     const applicant = {
       name,
       email,
       skills: skillsArray,
       experience: parseInt(experience),
-      matchScore,
     };
 
     // Check if already applied
@@ -80,7 +70,6 @@ router.post("/apply", async (req, res) => {
 
     res.status(201).json({
       message: "Application submitted successfully",
-      matchScore,
     });
   } catch (err) {
     res.status(500).json({ error: err.message });

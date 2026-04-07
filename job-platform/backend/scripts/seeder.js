@@ -161,36 +161,49 @@ async function seedDatabase() {
         const lat = city.lat + (Math.random() - 0.5) * 0.1;
         const lng = city.lng + (Math.random() - 0.5) * 0.1;
 
+        // Define job tags FIRST
+        const jobTags = skillSets[Math.floor(Math.random() * skillSets.length)];
+
         // Create fake applicants for some jobs (2-3 applicants)
         const applicants = [];
         if (Math.random() > 0.5) {
           const applicantCount = 2 + Math.floor(Math.random() * 2);
           for (let a = 0; a < applicantCount; a++) {
-            const skills =
-              skillSets[Math.floor(Math.random() * skillSets.length)];
-            const matchingSkills = skills.filter((skill) =>
-              [
-                "React",
-                "Node.js",
-                "Python",
-                "AWS",
-                "Docker",
-                "JavaScript",
-                "TypeScript",
-                "Java",
-                "MongoDB",
-                "PostgreSQL",
-              ].includes(skill),
+            // Create applicant skills with some overlap with job tags
+            let applicantSkills;
+            if (Math.random() > 0.3) {
+              // 70% of applicants have some matching skills
+              const matchCount =
+                1 + Math.floor(Math.random() * Math.min(3, jobTags.length));
+              applicantSkills = jobTags
+                .slice(0, matchCount)
+                .concat(
+                  skillSets[Math.floor(Math.random() * skillSets.length)].slice(
+                    0,
+                    1,
+                  ),
+                );
+            } else {
+              // 30% have completely different skills
+              applicantSkills =
+                skillSets[Math.floor(Math.random() * skillSets.length)];
+            }
+
+            // Calculate match score based on job tags
+            const matchingSkills = applicantSkills.filter((skill) =>
+              jobTags.some((tag) =>
+                tag.toLowerCase().includes(skill.toLowerCase()),
+              ),
             ).length;
             const matchScore =
-              skills.length > 0
-                ? Math.round((matchingSkills / skills.length) * 100)
+              jobTags.length > 0
+                ? Math.round((matchingSkills / jobTags.length) * 100)
                 : 0;
 
             applicants.push({
               name: generateFakeName(),
               email: `applicant${jobId}-${a}@example.com`,
-              skills: skills,
+              skills: applicantSkills,
               experience: Math.floor(Math.random() * 8),
               matchScore: matchScore,
               appliedAt: new Date(
@@ -205,7 +218,7 @@ async function seedDatabase() {
           company: company,
           location: city.name,
           salary: salaryRanges[Math.floor(Math.random() * salaryRanges.length)],
-          tags: skillSets[Math.floor(Math.random() * skillSets.length)],
+          tags: jobTags,
           description:
             descriptions[Math.floor(Math.random() * descriptions.length)],
           coordinates: { lat, lng },
