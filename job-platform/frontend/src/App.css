@@ -1,0 +1,123 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #0b1117;
+}
+
+.navbar {
+  background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+  color: #c9d1d9;
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+  border-bottom: 1px solid #30363d;
+  z-index: 100;
+}
+
+.navbar .logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.navbar .logo button {
+  background: rgba(88, 166, 255, 0.1);
+  border: 1px solid #30363d;
+  color: #58a6ff;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.navbar .logo button:hover {
+  background: rgba(88, 166, 255, 0.2);
+  border-color: #58a6ff;
+}
+
+.navbar .logo h1 {
+  color: #c9d1d9;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.mode-toggle {
+  display: flex;
+  gap: 0.25rem;
+  background: rgba(88, 166, 255, 0.05);
+  padding: 0.25rem;
+  border-radius: 4px;
+  border: 1px solid #30363d;
+}
+
+.mode-btn {
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  border: none;
+  color: #8b949e;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border-radius: 3px;
+  transition: all 0.2s;
+}
+
+.mode-btn:hover {
+  color: #58a6ff;
+}
+
+.mode-btn.active {
+  background: rgba(88, 166, 255, 0.2);
+  color: #58a6ff;
+  font-weight: 600;
+}
+
+.nav-btn {
+  padding: 0.6rem 1rem;
+  background: rgba(88, 166, 255, 0.05);
+  border: 1px solid #30363d;
+  color: #8b949e;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  transition: all 0.3s;
+  font-weight: 500;
+}
+
+.nav-btn:hover {
+  background: rgba(88, 166, 255, 0.1);
+  border-color: #58a6ff;
+  color: #58a6ff;
+}
+
+.nav-btn.active {
+  background: rgba(88, 166, 255, 0.15);
+  border-color: #58a6ff;
+  color: #58a6ff;
+  font-weight: 600;
+}
+
+main {
+  flex: 1;
+  overflow: auto;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 1.2rem;
+  color: #58a6ff;
+}

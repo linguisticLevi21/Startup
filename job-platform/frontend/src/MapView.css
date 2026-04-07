@@ -1,0 +1,370 @@
+.map-view {
+  display: flex;
+  height: 100vh;
+  background: #0b1117;
+  overflow: hidden;
+}
+
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 1rem;
+  color: #58a6ff;
+  font-weight: 500;
+}
+
+.map-left {
+  flex: 0 0 70%;
+  position: relative;
+  z-index: 1;
+}
+
+.leaflet-map {
+  width: 100%;
+  height: 100%;
+  background: #161b22;
+}
+
+.leaflet-container {
+  background: #161b22;
+}
+
+.leaflet-tile {
+  filter: brightness(0.8) contrast(1.1);
+}
+
+.leaflet-popup-content {
+  color: #0b1117;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+/* RIGHT PANEL */
+.map-right {
+  flex: 0 0 30%;
+  background: #0d1117;
+  border-left: 1px solid #30363d;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.panel-header {
+  padding: 1.2rem;
+  border-bottom: 1px solid #30363d;
+  flex-shrink: 0;
+}
+
+.panel-header h2 {
+  margin: 0 0 0.3rem 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #c9d1d9;
+}
+
+.company-count {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #8b949e;
+}
+
+.panel-search {
+  padding: 0.8rem;
+  border-bottom: 1px solid #30363d;
+  flex-shrink: 0;
+}
+
+.panel-search input {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  color: #c9d1d9;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.panel-search input:focus {
+  outline: none;
+  border-color: #58a6ff;
+  box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.15);
+}
+
+.panel-search input::placeholder {
+  color: #6e7681;
+}
+
+.companies-panel {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.company-item {
+  display: flex;
+  gap: 0.8rem;
+  padding: 0.8rem;
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  align-items: flex-start;
+}
+
+.company-item:hover {
+  background: #0f1419;
+  border-color: #58a6ff;
+}
+
+.company-item.active {
+  border-color: #58a6ff;
+  background: rgba(88, 166, 255, 0.1);
+}
+
+.company-logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #58a6ff 0%, #79c0ff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: white;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.company-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.company-info h3 {
+  margin: 0 0 0.25rem 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #c9d1d9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.company-info .location {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #8b949e;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.company-meta {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.role-count {
+  font-size: 0.7rem;
+  color: #58a6ff;
+  font-weight: 600;
+  background: rgba(88, 166, 255, 0.15);
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+}
+
+.tech-tags {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.tag {
+  font-size: 0.65rem;
+  background: #30363d;
+  color: #8b949e;
+  padding: 0.15rem 0.4rem;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+
+.no-results {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: #8b949e;
+  font-size: 0.9rem;
+}
+
+/* ROLES MODAL */
+.roles-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  z-index: 2000;
+}
+
+.roles-modal {
+  background: #0d1117;
+  width: 100%;
+  max-width: 450px;
+  height: 80vh;
+  border-left: 1px solid #30363d;
+  display: flex;
+  flex-direction: column;
+  animation: slideInRight 0.3s ease;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.modal-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid #30363d;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.modal-header h2 {
+  margin: 0 0 0.3rem 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #c9d1d9;
+}
+
+.modal-header p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #8b949e;
+}
+
+.close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: #8b949e;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.close-btn:hover {
+  color: #c9d1d9;
+}
+
+.roles-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+.roles-list h3 {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #c9d1d9;
+}
+
+.role-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 0.6rem;
+  transition: all 0.2s;
+}
+
+.role-item:hover {
+  background: #0f1419;
+  border-color: #58a6ff;
+  transform: translateX(4px);
+}
+
+.role-info h4 {
+  margin: 0 0 0.2rem 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #c9d1d9;
+}
+
+.role-info .salary {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #58a6ff;
+  font-weight: 500;
+}
+
+.arrow {
+  color: #58a6ff;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+/* Scrollbar */
+.companies-panel::-webkit-scrollbar,
+.roles-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.companies-panel::-webkit-scrollbar-track,
+.roles-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.companies-panel::-webkit-scrollbar-thumb,
+.roles-list::-webkit-scrollbar-thumb {
+  background: #30363d;
+  border-radius: 3px;
+}
+
+.companies-panel::-webkit-scrollbar-thumb:hover,
+.roles-list::-webkit-scrollbar-thumb:hover {
+  background: #484f58;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .map-view {
+    flex-direction: column;
+  }
+
+  .map-left {
+    flex: 0 0 50%;
+  }
+
+  .map-right {
+    flex: 0 0 50%;
+    border-left: none;
+    border-top: 1px solid #30363d;
+  }
+
+  .roles-modal {
+    max-width: 100%;
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "env": "development",
+  "ext": "js",
+  "script": "server.js",
+  "watch": ["server.js", "routes/", "models/"],
+  "exec": "node",
+  "delay": 1000,
+  "exit": true,
+  "ignore": ["node_modules", ".git", "*.json"]
+}
