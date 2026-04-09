@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Startup Arena - Project Deep Dive</title>
+    <style>
+      :root {
+        --bg: #0b1020;
+        --panel: #111831;
+        --text: #f2f5ff;
+        --muted: #a7b2d6;
+        --accent: #4dd0e1;
+        --accent2: #76ffb0;
+        --line: #253052;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: radial-gradient(
+          circle at top right,
+          #172447 0%,
+          var(--bg) 55%
+        );
+        color: var(--text);
+        line-height: 1.45;
+      }
+
+      .deck {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 28px;
+      }
+
+      .slide {
+        min-height: 92vh;
+        margin-bottom: 28px;
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.03),
+          rgba(255, 255, 255, 0.01)
+        );
+        padding: 48px;
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
+        page-break-after: always;
+      }
+
+      h1,
+      h2,
+      h3 {
+        margin-top: 0;
+        letter-spacing: 0.2px;
+      }
+
+      h1 {
+        font-size: 48px;
+        margin-bottom: 10px;
+      }
+
+      h2 {
+        font-size: 34px;
+        color: var(--accent);
+        margin-bottom: 16px;
+      }
+
+      h3 {
+        font-size: 24px;
+        color: var(--accent2);
+        margin-bottom: 10px;
+      }
+
+      p,
+      li {
+        font-size: 20px;
+        color: var(--text);
+      }
+
+      .muted {
+        color: var(--muted);
+      }
+
+      ul {
+        margin: 0;
+        padding-left: 24px;
+      }
+
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+
+      .card {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 18px;
+        background: var(--panel);
+      }
+
+      .pill {
+        display: inline-block;
+        margin: 4px 8px 0 0;
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        background: #1a2445;
+        font-size: 16px;
+        color: #dbe4ff;
+      }
+
+      .kpi {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--accent2);
+      }
+
+      .footer {
+        margin-top: 22px;
+        font-size: 15px;
+        color: var(--muted);
+      }
+
+      code {
+        font-size: 18px;
+        background: #1a2445;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 2px 8px;
+        color: #d6e4ff;
+      }
+
+      @media print {
+        body {
+          background: #fff;
+          color: #000;
+        }
+        .deck {
+          padding: 0;
+          max-width: none;
+        }
+        .slide {
+          border: 0;
+          border-radius: 0;
+          box-shadow: none;
+          margin: 0;
+          min-height: 100vh;
+          padding: 40px;
+          background: #fff;
+          color: #000;
+        }
+        h2,
+        h3,
+        .kpi {
+          color: #1f4a7d;
+        }
+        .card {
+          background: #f7f9fc;
+          border-color: #d9e1ef;
+        }
+        .pill {
+          background: #eff4ff;
+          border-color: #d8e2f5;
+          color: #1d3557;
+        }
+        .muted,
+        .footer {
+          color: #4b5f7a;
+        }
+        code {
+          background: #eef2f9;
+          border-color: #dbe4f0;
+          color: #223a5e;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="deck">
+      <section class="slide">
+        <h1>Startup Arena</h1>
+        <p class="muted">Project Deep Dive Presentation</p>
+        <div class="grid-2" style="margin-top: 24px">
+          <div class="card">
+            <h3>What It Is</h3>
+            <p>Map-based hiring platform with two flows:</p>
+            <ul>
+              <li>Applicant mode for job discovery and application</li>
+              <li>HR mode for applicant review and decisions</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Current Runtime</h3>
+            <ul>
+              <li>Frontend: <code>http://localhost:3000</code></li>
+              <li>Backend API: <code>http://localhost:5000/api</code></li>
+              <li>MongoDB: <code>mongodb://localhost:27017/</code></li>
+            </ul>
+          </div>
+        </div>
+        <p class="footer">Prepared on April 10, 2026</p>
+      </section>
+
+      <section class="slide">
+        <h2>Tech Stack and Why</h2>
+        <div class="card">
+          <h3>Backend</h3>
+          <p>
+            <span class="pill">Node.js</span><span class="pill">Express</span
+            ><span class="pill">MongoDB</span><span class="pill">Mongoose</span
+            ><span class="pill">dotenv</span><span class="pill">CORS</span>
+          </p>
+          <ul>
+            <li>Express keeps API simple and fast to iterate</li>
+            <li>Mongoose gives schema validation and easy querying</li>
+            <li>MongoDB fits nested applicant arrays and flexible fields</li>
+          </ul>
+        </div>
+        <div class="card" style="margin-top: 18px">
+          <h3>Frontend</h3>
+          <p>
+            <span class="pill">React 18</span><span class="pill">Axios</span
+            ><span class="pill">Leaflet</span
+            ><span class="pill">React-Leaflet</span
+            ><span class="pill">CSS Variables</span>
+          </p>
+          <ul>
+            <li>React for clear component-based architecture</li>
+            <li>Leaflet makes location-based browsing intuitive</li>
+            <li>Axios centralizes API interaction cleanly</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="slide">
+        <h2>System Architecture</h2>
+        <div class="grid-2">
+          <div class="card">
+            <h3>Frontend Layer</h3>
+            <ul>
+              <li><code>App.js</code> controls role and navigation flow</li>
+              <li>
+                <code>MapView.js</code> shows city-specific startups on map
+              </li>
+              <li>
+                <code>HRDashboard.js</code> manages applicants and decisions
+              </li>
+              <li><code>ApplyModal.js</code> handles candidate submission</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Backend Layer</h3>
+            <ul>
+              <li><code>server.js</code> wires middleware and routes</li>
+              <li><code>routes/jobs.js</code> has endpoint logic</li>
+              <li><code>models/Job.js</code> defines Job + Applicant schema</li>
+              <li>Mongo stores jobs with embedded applicant records</li>
+            </ul>
+          </div>
+        </div>
+        <div class="card" style="margin-top: 18px">
+          <h3>Data Path</h3>
+          <p>
+            Browser UI -> Axios -> Express route -> Mongoose query/update ->
+            MongoDB -> JSON response -> React state update.
+          </p>
+        </div>
+      </section>
+
+      <section class="slide">
+        <h2>Core API Endpoints</h2>
+        <div class="card">
+          <ul>
+            <li><code>GET /api/jobs</code> fetch all jobs</li>
+            <li><code>GET /api/jobs/:id</code> fetch one job</li>
+            <li>
+              <code>GET /api/jobs/:id/applicants</code> fetch applicants sorted
+              by match score
+            </li>
+            <li><code>POST /api/apply</code> submit an application</li>
+            <li><code>POST /api/accept</code> accept a candidate</li>
+            <li><code>POST /api/reject</code> reject a candidate</li>
+          </ul>
+        </div>
+        <div class="grid-2" style="margin-top: 18px">
+          <div class="card">
+            <h3>Validation Rules</h3>
+            <ul>
+              <li>Required fields must exist</li>
+              <li>Duplicate application by same email blocked</li>
+              <li>Openings limit enforced before apply/accept</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Response Pattern</h3>
+            <ul>
+              <li>Success: JSON payload + status 200/201</li>
+              <li>Errors: 400/404/500 with descriptive message</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <h2>Match Score Logic</h2>
+        <div class="card">
+          <h3>How It Works</h3>
+          <ul>
+            <li>
+              Job tags and applicant skills are normalized (lowercase + trim)
+            </li>
+            <li>
+              Each required tag checks for overlap against submitted skills
+            </li>
+            <li>Final score is rounded percentage of matched requirements</li>
+          </ul>
+        </div>
+        <div class="card" style="margin-top: 18px">
+          <h3>Formula</h3>
+          <p><code>matchScore = round((matches / requiredTags) * 100)</code></p>
+          <p class="muted">
+            Example: 2 matches out of 4 required skills => 50%
+          </p>
+        </div>
+      </section>
+
+      <section class="slide">
+        <h2>Database Model</h2>
+        <div class="grid-2">
+          <div class="card">
+            <h3>Job Fields</h3>
+            <ul>
+              <li>title, company, location, salary</li>
+              <li>tags, description, openings</li>
+              <li>coordinates { lat, lng }</li>
+              <li>postedAt</li>
+              <li>applicants[]</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Applicant Fields</h3>
+            <ul>
+              <li>name, email</li>
+              <li>skills[], experience</li>
+              <li>portfolio</li>
+              <li>matchScore</li>
+              <li>status: pending | accepted | rejected</li>
+              <li>appliedAt</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <h2>Frontend Flows</h2>
+        <div class="grid-2">
+          <div class="card">
+            <h3>Applicant Journey</h3>
+            <ul>
+              <li>Login -> Landing Page</li>
+              <li>Select city -> MapView</li>
+              <li>Select company -> Select role</li>
+              <li>Open JobDetails -> ApplyModal</li>
+              <li>Submit form -> API call -> Success message</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>HR Journey</h3>
+            <ul>
+              <li>Login as <code>hr@test.com</code></li>
+              <li>Open HRDashboard</li>
+              <li>Select job -> fetch applicants</li>
+              <li>Review skills + match score</li>
+              <li>Accept or reject based on fit</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <h2>Seed Data and Demo Value</h2>
+        <div class="card">
+          <ul>
+            <li>
+              Seeder generates realistic Indian startup jobs and applicants
+            </li>
+            <li>Multiple cities and varied skill sets for robust testing</li>
+            <li>Enables fast demos without manual data entry</li>
+          </ul>
+        </div>
+        <div class="grid-2" style="margin-top: 18px">
+          <div class="card">
+            <div class="kpi">15+</div>
+            <p>Companies in data generation set</p>
+          </div>
+          <div class="card">
+            <div class="kpi">60+</div>
+            <p>
+              Jobs seeded in current run profile (varies per random generation)
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <h2>Risks and Improvements</h2>
+        <div class="card">
+          <h3>Current Gaps</h3>
+          <ul>
+            <li>Login is frontend-only simulation, no real auth</li>
+            <li>API docs do not fully include accept/reject routes</li>
+            <li>Duplicate/legacy files exist in frontend folder tree</li>
+            <li>Backend dev script with nodemon config needs cleanup</li>
+          </ul>
+        </div>
+        <div class="card" style="margin-top: 18px">
+          <h3>Next Upgrades</h3>
+          <ul>
+            <li>Add JWT auth and role-protected endpoints</li>
+            <li>Use request validation schema (Joi/Zod)</li>
+            <li>Improve match scoring with weighted skill relevance</li>
+            <li>Add test coverage for routes and integration flow</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="slide">
+        <h2>Summary</h2>
+        <div class="card">
+          <ul>
+            <li>Strong prototype architecture with clear role-based UX</li>
+            <li>Map-first discovery is a differentiating product feature</li>
+            <li>Backend logic already supports practical HR workflows</li>
+            <li>
+              With auth, validation, and cleanup, this can become
+              production-grade
+            </li>
+          </ul>
+        </div>
+        <p class="footer">
+          You can present this directly as slides in browser, or export as PDF.
+        </p>
+      </section>
+    </main>
+  </body>
+</html>
