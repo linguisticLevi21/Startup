@@ -4,6 +4,16 @@
   background-color: #0a0a0a;
   overflow: hidden;
   height: 100vh;
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .hr-loading {
@@ -24,6 +34,18 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  animation: slideInLeft 0.5s ease-out;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .hr-panel-header {
@@ -69,6 +91,34 @@
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s ease;
+  animation: cardFadeIn 0.3s ease-out backwards;
+}
+
+.hr-job-card:nth-child(1) {
+  animation-delay: 0.05s;
+}
+.hr-job-card:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.hr-job-card:nth-child(3) {
+  animation-delay: 0.15s;
+}
+.hr-job-card:nth-child(4) {
+  animation-delay: 0.2s;
+}
+.hr-job-card:nth-child(5) {
+  animation-delay: 0.25s;
+}
+
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .hr-job-card:hover {
@@ -115,6 +165,18 @@
   flex-direction: column;
   overflow: hidden;
   padding: 16px;
+  animation: slideInRight 0.5s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .hr-applicants-list {
@@ -130,6 +192,13 @@
   background-color: #141414;
   border: 1px solid #222;
   border-radius: 10px;
+  animation: cardFadeIn 0.3s ease-out;
+  transition: all 0.2s ease;
+}
+
+.hr-applicant-card:hover {
+  border-color: #333;
+  background-color: #1a1a1a;
 }
 
 .hr-applicant-header {

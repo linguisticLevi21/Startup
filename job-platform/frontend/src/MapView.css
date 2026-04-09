@@ -5,6 +5,16 @@
   overflow: hidden;
   height: calc(100vh - 60px);
   width: 100%;
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .loading-state {
@@ -17,15 +27,17 @@
   font-size: 14px;
   color: #a1a1aa;
   gap: 16px;
+  animation: fadeIn 0.3s ease-out;
 }
 
 .loading-spinner {
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   border: 3px solid rgba(99, 102, 241, 0.1);
   border-top-color: #6366f1;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
 }
 
 @keyframes spin {
@@ -40,6 +52,18 @@
   min-width: 0;
   position: relative;
   z-index: 1;
+  animation: slideInLeft 0.5s ease-out;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .leaflet-map {
@@ -109,12 +133,25 @@
   overflow: hidden;
   z-index: 2;
   height: 100%;
+  animation: slideInRight 0.5s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .panel-header {
   padding: 20px;
   border-bottom: 1px solid #1a1a1a;
   flex-shrink: 0;
+  animation: fadeIn 0.5s ease-out 0.1s backwards;
 }
 
 .panel-header h2 {

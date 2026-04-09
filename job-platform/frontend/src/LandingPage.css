@@ -1,22 +1,43 @@
 .landing-page {
   flex: 1;
-  background: linear-gradient(135deg, #0a0a0a 0%, #0f0f0f 100%);
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a0033 25%, #0f0f0f 100%);
   position: relative;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
+  animation: bgGradientShift 15s ease infinite;
+}
+
+@keyframes bgGradientShift {
+  0%,
+  100% {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a0033 25%, #0f0f0f 100%);
+  }
+  50% {
+    background: linear-gradient(135deg, #0f0f0f 0%, #2d0052 25%, #0a0a0a 100%);
+  }
 }
 
 .landing-grid-bg {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
   background-size: 50px 50px;
   pointer-events: none;
-  opacity: 0.5;
+  opacity: 0.8;
+  animation: gridMove 20s linear infinite;
+}
+
+@keyframes gridMove {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 50px 50px;
+  }
 }
 
 .landing-wrapper {
@@ -28,6 +49,18 @@
   position: relative;
   z-index: 2;
   align-items: center;
+  animation: contentFadeInUp 0.8s ease-out;
+}
+
+@keyframes contentFadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .landing-left {
@@ -144,13 +177,41 @@
   font-weight: 600;
   color: #ffffff;
   min-height: 80px;
+  animation: cardSlideIn 0.5s ease-out backwards;
+}
+
+.city-card:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.city-card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.city-card:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.city-card:nth-child(4) {
+  animation-delay: 0.4s;
+}
+
+@keyframes cardSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .city-card:hover {
   background: linear-gradient(135deg, #1a1a1a 0%, #141414 100%);
-  border-color: #333;
-  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.1);
-  transform: translateY(-2px);
+  border-color: #6366f1;
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.2);
+  transform: translateY(-4px);
 }
 
 .city-card:active {
