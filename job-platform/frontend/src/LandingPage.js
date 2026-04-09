@@ -5,15 +5,36 @@ function LandingPage({ onSelectCity }) {
   const [selectedCity, setSelectedCity] = useState("Bangalore");
 
   const cities = [
-    { name: "Bangalore", code: "BNG", image: "🌆" },
-    { name: "Mumbai", code: "BOM", image: "🌃" },
-    { name: "Delhi", code: "DEL", image: "🏛️" },
+    {
+      name: "Bangalore",
+      code: "BNG",
+      image:
+        "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?q=80&w=1200&auto=format&fit=crop",
+    },
+    {
+      name: "Mumbai",
+      code: "BOM",
+      image:
+        "https://images.unsplash.com/photo-1522542455823-8cfb06bcefc2?q=80&w=1200&auto=format&fit=crop",
+    },
+    {
+      name: "Delhi",
+      code: "DEL",
+      image:
+        "https://images.unsplash.com/photo-1587474260584-136574528ed5?q=80&w=1200&auto=format&fit=crop",
+    },
+    {
+      name: "Hyderabad",
+      code: "HYD",
+      image:
+        "https://images.unsplash.com/photo-1586295745778-958045db1e20?q=80&w=1200&auto=format&fit=crop",
+    },
   ];
 
   const features = [
     { icon: "🔄", title: "Always Fresh", desc: "Refreshed daily." },
-    { icon: "🔓", title: "No Sign-in", desc: "Zero friction." },
-    { icon: "💰", title: "Free Forever", desc: "No paywalls." },
+    { icon: "⚡", title: "No Sign-in", desc: "Zero friction." },
+    { icon: "🗺️", title: "Free Forever", desc: "No paywalls." },
   ];
 
   return (
@@ -30,8 +51,8 @@ function LandingPage({ onSelectCity }) {
               STARTUP ARENA
             </h1>
             <p className="landing-main-description">
-              The most direct way to find startup roles in {selectedCity}. Zero
-              friction, visual first.
+              The most direct way to find startup roles in India's top cities.
+              Zero friction, visual first.
             </p>
 
             {/* FEATURES */}
@@ -39,8 +60,10 @@ function LandingPage({ onSelectCity }) {
               {features.map((feature, idx) => (
                 <div key={idx} className="feature-card">
                   <span className="feature-icon">{feature.icon}</span>
-                  <h3 className="feature-title">{feature.title}</h3>
-                  <p className="feature-desc">{feature.desc}</p>
+                  <div className="feature-text">
+                    <h3 className="feature-title">{feature.title}</h3>
+                    <p className="feature-desc">{feature.desc}</p>
+                  </div>
                 </div>
               ))}
             </div>
@@ -55,26 +78,39 @@ function LandingPage({ onSelectCity }) {
                     <button
                       key={city.name}
                       className="explore-city-card"
+                      style={{ backgroundImage: `url(${city.image})` }}
                       onClick={() => {
                         setSelectedCity(city.name);
                         onSelectCity(city.name);
                       }}
                     >
-                      <div className="explore-city-emoji">{city.image}</div>
-                      <span className="explore-city-code">{city.code}</span>
-                      <p className="explore-city-name">{city.name}</p>
+                      <div className="explore-city-overlay"></div>
+                      <div className="explore-city-content">
+                        <span className="explore-city-code">{city.code}</span>
+                        <p className="explore-city-name">{city.name}</p>
+                      </div>
                     </button>
                   ))}
               </div>
             </div>
 
-            <p className="made-by">MADE BY HRDK</p>
+            <div className="made-by-section">
+              <span className="made-by">MADE BY HRDK</span>
+              <button className="get-matched-btn">
+                <span>🔔 Get Matched Now</span>
+              </button>
+            </div>
           </div>
         </div>
 
         {/* RIGHT SECTION */}
         <div className="landing-right-section">
-          <div className={`hero-image hero-${selectedCity.toLowerCase()}`}>
+          <div
+            className="hero-image"
+            style={{
+              backgroundImage: `url(${cities.find((c) => c.name === selectedCity)?.image})`,
+            }}
+          >
             <button
               className="enter-arena-btn"
               onClick={() => onSelectCity(selectedCity)}

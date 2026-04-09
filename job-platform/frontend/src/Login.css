@@ -3,7 +3,15 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #0a0a0a 0%, #1a0033 25%, #0f0f0f 100%);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(10, 10, 10, 0.85) 0%,
+      rgba(26, 0, 51, 0.8) 50%,
+      rgba(15, 15, 15, 0.9) 100%
+    ),
+    url("https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1920&auto=format&fit=crop")
+      center/cover no-repeat fixed;
   font-family:
     "Inter",
     -apple-system,
@@ -12,17 +20,6 @@
     sans-serif;
   overflow: hidden;
   position: relative;
-  animation: bgGradientShift 15s ease infinite;
-}
-
-@keyframes bgGradientShift {
-  0%,
-  100% {
-    background: linear-gradient(135deg, #0a0a0a 0%, #1a0033 25%, #0f0f0f 100%);
-  }
-  50% {
-    background: linear-gradient(135deg, #0f0f0f 0%, #2d0052 25%, #0a0a0a 100%);
-  }
 }
 
 .login-page::before {

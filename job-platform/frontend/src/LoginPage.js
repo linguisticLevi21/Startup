@@ -47,19 +47,12 @@ function LoginPage({ onLogin }) {
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={loading}
               />
-              <small className="helper-text">
-                Use hr@test.com for HR dashboard
-              </small>
             </div>
 
             <button type="submit" className="login-btn" disabled={loading}>
               {loading ? "Logging in..." : "Continue"}
             </button>
           </form>
-
-          <div className="login-footer">
-            <p>No sign-up required • Access instantly</p>
-          </div>
         </div>
       </div>
     </div>
