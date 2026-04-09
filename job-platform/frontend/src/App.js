@@ -5,7 +5,7 @@ import MapView from "./MapView";
 import HRDashboard from "./HRDashboard";
 import "./App.css";
 
-const VALID_CITIES = ["Bangalore", "Mumbai", "Delhi", "Remote"];
+const VALID_CITIES = ["Bangalore", "Mumbai", "Delhi", "Hyderabad", "Remote"];
 
 function App() {
   const [user, setUser] = useState(null);
@@ -57,60 +57,73 @@ function App() {
 
   return (
     <div className="app">
-      {/* Navbar */}
-      <nav className="navbar" id="main-navbar">
-        <div className="nav-left">
-          <div
-            className="nav-brand"
-            onClick={() =>
-              setCurrentView(user.role === "hr" ? "hr" : "landing")
-            }
-          >
-            <div className="nav-logo-icon">S</div>
-            <span className="nav-logo-text">Startup Arena</span>
-          </div>
-
-          {user.role === "applicant" && currentView === "map" && (
-            <button
-              className="nav-back-btn"
-              onClick={() => setCurrentView("landing")}
-              id="nav-back-btn"
-            >
-              ← Cities
-            </button>
+      {user.role === "hr" ? (
+        /* HR view keeps the full navbar */
+        <>
+          <nav className="navbar" id="main-navbar">
+            <div className="nav-left">
+              <div className="nav-brand" onClick={() => setCurrentView("hr")}>
+                <div className="nav-logo-icon">S</div>
+                <span className="nav-logo-text">Startup Arena</span>
+              </div>
+            </div>
+            <div className="nav-right">
+              <div className="nav-role-badge" id="nav-role-badge">
+                <span className="role-dot hr"></span>
+                HR Manager
+              </div>
+              <button className="nav-logout-btn" onClick={handleLogout} id="nav-logout-btn">
+                Logout
+              </button>
+            </div>
+          </nav>
+          <main className="app-content">
+            <HRDashboard />
+          </main>
+        </>
+      ) : (
+        /* Applicant flow */
+        <>
+          {currentView === "landing" && (
+            <LandingPage
+              onSelectCity={handleSelectCity}
+              user={user}
+              onLogout={handleLogout}
+            />
           )}
-        </div>
-
-        <div className="nav-right">
-          <div className="nav-role-badge" id="nav-role-badge">
-            <span
-              className={`role-dot ${user.role === "hr" ? "hr" : "applicant"}`}
-            ></span>
-            {user.role === "hr" ? "HR Manager" : "Applicant"}
-          </div>
-          <button
-            className="nav-logout-btn"
-            onClick={handleLogout}
-            id="nav-logout-btn"
-          >
-            Logout
-          </button>
-        </div>
-      </nav>
-
-      {/* Content */}
-      <main className="app-content">
-        {user.role === "hr" ? (
-          <HRDashboard />
-        ) : (
-          <>
-            {currentView === "landing" && (
-              <LandingPage onSelectCity={handleSelectCity} />
-            )}
-            {currentView === "map" && <MapView city={selectedCity} />}
-          </>
-        )}
-      </main>
+          {currentView === "map" && (
+            <>
+              <nav className="navbar" id="main-navbar">
+                <div className="nav-left">
+                  <div className="nav-brand" onClick={() => setCurrentView("landing")}>
+                    <div className="nav-logo-icon">S</div>
+                    <span className="nav-logo-text">Startup Arena</span>
+                  </div>
+                  <button
+                    className="nav-back-btn"
+                    onClick={() => setCurrentView("landing")}
+                    id="nav-back-btn"
+                  >
+                    ← Cities
+                  </button>
+                </div>
+                <div className="nav-right">
+                  <div className="nav-role-badge" id="nav-role-badge">
+                    <span className="role-dot applicant"></span>
+                    Applicant
+                  </div>
+                  <button className="nav-logout-btn" onClick={handleLogout} id="nav-logout-btn">
+                    Logout
+                  </button>
+                </div>
+              </nav>
+              <main className="app-content">
+                <MapView city={selectedCity} />
+              </main>
+            </>
+          )}
+        </>
+      )}
     </div>
   );
 }

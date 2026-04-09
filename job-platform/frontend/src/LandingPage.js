@@ -1,125 +1,114 @@
-import React, { useState } from "react";
+import React from "react";
 import "./LandingPage.css";
 
-function LandingPage({ onSelectCity }) {
-  const [selectedCity, setSelectedCity] = useState("Bangalore");
-
+function LandingPage({ onSelectCity, user, onLogout }) {
   const cities = [
-    {
-      name: "Bangalore",
-      code: "BNG",
-      image:
-        "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?q=80&w=1200&auto=format&fit=crop",
-    },
-    {
-      name: "Mumbai",
-      code: "BOM",
-      image:
-        "https://images.unsplash.com/photo-1529253355930-ddbe423a2ac7?q=80&w=1200&auto=format&fit=crop",
-    },
-    {
-      name: "Delhi",
-      code: "DEL",
-      image:
-        "https://images.unsplash.com/photo-1587474260584-136574528ed5?q=80&w=1200&auto=format&fit=crop",
-    },
-    {
-      name: "Hyderabad",
-      code: "HYD",
-      image:
-        "https://images.unsplash.com/photo-1574431535497-6a58396ecf7d?q=80&w=1200&auto=format&fit=crop",
-    },
+    { name: "Mumbai",    image: "/mumbai.png",    key: "Mumbai"    },
+    { name: "Hyderabad", image: "/hyderabad.png", key: "Hyderabad" },
+    { name: "Bengaluru", image: "/bengaluru.png", key: "Bangalore"  },
+    { name: "Delhi",     image: "/delhi.png",     key: "Delhi"     },
   ];
 
   const features = [
-    { icon: "🔄", title: "Always Fresh", desc: "Refreshed daily." },
-    { icon: "⚡", title: "No Sign-in", desc: "Zero friction." },
-    { icon: "🗺️", title: "Free Forever", desc: "No paywalls." },
+    {
+      icon: "⚡",
+      title: "Live Job Feed",
+      desc: "Updated daily from top startups across India's biggest cities.",
+    },
+    {
+      icon: "🗺️",
+      title: "Map Explorer",
+      desc: "Browse startups visually by location — click any pin to dive in.",
+    },
+    {
+      icon: "🚀",
+      title: "Zero Friction",
+      desc: "No sign-up walls. Just explore, apply, and get matched fast.",
+    },
   ];
 
   return (
-    <div className="landing-page">
-      <div className="landing-grid-bg"></div>
+    <div className="lp-root">
+      {/* Subtle grid background */}
+      <div className="lp-grid-bg" />
 
-      <div className="landing-container">
-        {/* LEFT SECTION */}
-        <div className="landing-left-section">
-          <div className="landing-main-content">
-            <h1 className="landing-main-heading">
-              {selectedCity.toUpperCase()}
-              <br />
-              STARTUP ARENA
-            </h1>
-            <p className="landing-main-description">
-              The most direct way to find startup roles in India's top cities.
-              Zero friction, visual first.
-            </p>
-
-            {/* FEATURES */}
-            <div className="features-grid">
-              {features.map((feature, idx) => (
-                <div key={idx} className="feature-card">
-                  <span className="feature-icon">{feature.icon}</span>
-                  <div className="feature-text">
-                    <h3 className="feature-title">{feature.title}</h3>
-                    <p className="feature-desc">{feature.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* ALSO EXPLORE */}
-            <div className="also-explore">
-              <p className="explore-label">ALSO EXPLORE</p>
-              <div className="explore-cities">
-                {cities
-                  .filter((c) => c.name !== selectedCity)
-                  .map((city) => (
-                    <button
-                      key={city.name}
-                      className="explore-city-card"
-                      style={{ backgroundImage: `url(${city.image})` }}
-                      onClick={() => {
-                        setSelectedCity(city.name);
-                        onSelectCity(city.name);
-                      }}
-                    >
-                      <div className="explore-city-overlay"></div>
-                      <div className="explore-city-content">
-                        <span className="explore-city-code">{city.code}</span>
-                        <p className="explore-city-name">{city.name}</p>
-                      </div>
-                    </button>
-                  ))}
-              </div>
-            </div>
-
-            <div className="made-by-section">
-              <span className="made-by">MADE BY HRDK</span>
-              <button className="get-matched-btn">
-                <span>🔔 Get Matched Now</span>
+      {/* ── HEADER ── */}
+      <header className="lp-header">
+        <div className="lp-header-left">
+          <img src="/logo.png" alt="Startup Arena Logo" className="lp-logo-img" />
+        </div>
+        <div className="lp-header-right">
+          {user && (
+            <>
+              <span className="lp-role-badge">
+                <span className="lp-role-dot" />
+                {user.role === "hr" ? "HR Manager" : "Applicant"}
+              </span>
+              <button className="lp-logout-btn" onClick={onLogout}>
+                Logout
               </button>
-            </div>
-          </div>
+            </>
+          )}
         </div>
+      </header>
 
-        {/* RIGHT SECTION */}
-        <div className="landing-right-section">
-          <div
-            className="hero-image"
-            style={{
-              backgroundImage: `url(${cities.find((c) => c.name === selectedCity)?.image})`,
-            }}
-          >
-            <button
-              className="enter-arena-btn"
-              onClick={() => onSelectCity(selectedCity)}
-            >
-              ENTER THE ARENA →
-            </button>
-          </div>
+      {/* ── HERO ── */}
+      <section className="lp-hero">
+        <h1 className="lp-hero-title">Startup Arena</h1>
+        <p className="lp-hero-sub">
+          India's most direct way to discover startup jobs — city by city, on the map.
+        </p>
+      </section>
+
+      {/* ── FEATURES ── */}
+      <section className="lp-features-section">
+        <div className="lp-features-row">
+          {features.map((f, i) => (
+            <div key={i} className="lp-feature-card">
+              <span className="lp-feature-icon">{f.icon}</span>
+              <h3 className="lp-feature-title">{f.title}</h3>
+              <p className="lp-feature-desc">{f.desc}</p>
+            </div>
+          ))}
         </div>
-      </div>
+      </section>
+
+      {/* ── CITY CARDS ── */}
+      <section className="lp-cities-section">
+        <p className="lp-cities-label">EXPLORE BY CITY</p>
+        <div className="lp-cities-grid">
+          {cities.map((city) => (
+            <button
+              key={city.key}
+              className="lp-city-card"
+              style={{ backgroundImage: `url(${city.image})` }}
+              onClick={() => onSelectCity(city.key)}
+              aria-label={`Explore ${city.name}`}
+            >
+              <div className="lp-city-overlay" />
+              <div className="lp-city-default">
+                <span className="lp-city-name">{city.name}</span>
+              </div>
+              <div className="lp-city-hover-content">
+                <span className="lp-city-action">Explore Map →</span>
+                <span className="lp-city-action">View Jobs →</span>
+              </div>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* ── FOOTER ── */}
+      <footer className="lp-footer">
+        <span className="lp-made-by">Made by Shahadat and Abhishek</span>
+        <button
+          className="lp-enter-btn"
+          onClick={() => onSelectCity("Bangalore")}
+          id="lp-enter-btn"
+        >
+          Enter →
+        </button>
+      </footer>
     </div>
   );
 }
