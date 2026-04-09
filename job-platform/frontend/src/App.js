@@ -6,7 +6,7 @@ import HRDashboard from "./HRDashboard";
 import { NavLogo } from "./NavLogo";
 import "./App.css";
 
-// Collaborator: Abhishek2327 - Joined the project
+// Made by Shahadat Hussain and Abhishek Sharma
 
 const VALID_CITIES = ["Bangalore", "Mumbai", "Delhi", "Hyderabad", "Remote"];
 
