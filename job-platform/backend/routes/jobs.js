@@ -5,7 +5,7 @@ const Job = require("../models/Job");
 // Get all jobs
 router.get("/jobs", async (req, res) => {
   try {
-    const jobs = await Job.find();
+    const jobs = await Job.find().sort({ postedAt: -1 });
     res.json(jobs);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -13,7 +13,6 @@ router.get("/jobs", async (req, res) => {
 });
 
 // Get job by ID
-
 router.get("/jobs/:id", async (req, res) => {
   try {
     const job = await Job.findById(req.params.id);
@@ -30,11 +29,38 @@ router.get("/jobs/:id/applicants", async (req, res) => {
     const job = await Job.findById(req.params.id);
     if (!job) return res.status(404).json({ error: "Job not found" });
 
-    res.json(job.applicants);
+    // Sort applicants by matchScore descending
+    const sorted = [...job.applicants].sort(
+      (a, b) => (b.matchScore || 0) - (a.matchScore || 0),
+    );
+    res.json(sorted);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
+
+// Calculate match score between applicant skills and job tags
+function calculateMatchScore(applicantSkills, jobTags) {
+  if (!jobTags || jobTags.length === 0) return 0;
+
+  const normalizedApplicant = applicantSkills.map((s) =>
+    s.toLowerCase().trim(),
+  );
+  const normalizedTags = jobTags.map((t) => t.toLowerCase().trim());
+
+  let matches = 0;
+  for (const tag of normalizedTags) {
+    if (
+      normalizedApplicant.some(
+        (skill) => skill.includes(tag) || tag.includes(skill),
+      )
+    ) {
+      matches++;
+    }
+  }
+
+  return Math.round((matches / normalizedTags.length) * 100);
+}
 
 // Apply for a job
 router.post("/apply", async (req, res) => {
@@ -52,11 +78,15 @@ router.post("/apply", async (req, res) => {
       ? skills
       : skills.split(",").map((s) => s.trim());
 
+    // Calculate match score
+    const matchScore = calculateMatchScore(skillsArray, job.tags);
+
     const applicant = {
       name,
       email,
       skills: skillsArray,
       experience: parseInt(experience),
+      matchScore,
     };
 
     // Check if already applied
@@ -70,6 +100,7 @@ router.post("/apply", async (req, res) => {
 
     res.status(201).json({
       message: "Application submitted successfully",
+      matchScore,
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
