@@ -5,7 +5,13 @@ const applicantSchema = new mongoose.Schema({
   email: { type: String, required: true },
   skills: [String],
   experience: { type: Number, required: true },
+  portfolio: { type: String, default: "" },
   matchScore: { type: Number, default: 0 },
+  status: {
+    type: String,
+    enum: ["pending", "accepted", "rejected"],
+    default: "pending",
+  },
   appliedAt: { type: Date, default: Date.now },
 });
 
@@ -16,6 +22,7 @@ const jobSchema = new mongoose.Schema({
   salary: { type: String, required: true },
   tags: [String],
   description: { type: String, required: true },
+  openings: { type: Number, default: 1, min: 1 },
   coordinates: {
     lat: { type: Number, required: true },
     lng: { type: Number, required: true },

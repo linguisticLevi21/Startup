@@ -5,24 +5,21 @@ import api from "./api";
 import JobDetails from "./JobDetails";
 import "./MapView.css";
 
-// Create company logo markers
+// Company marker with colored initial
 const createCompanyMarker = (companyName) => {
   const colors = [
-    "#FF6B6B",
-    "#4ECDC4",
-    "#45B7D1",
-    "#FFA07A",
-    "#98D8C8",
-    "#F7DC6F",
-    "#BB8FCE",
-    "#85C1E2",
-    "#F8B88B",
-    "#A8E6CF",
-    "#FF8B94",
-    "#A8D8EA",
-    "#FFE66D",
-    "#95E1D3",
-    "#F38181",
+    "#6366f1",
+    "#8b5cf6",
+    "#ec4899",
+    "#f43f5e",
+    "#f97316",
+    "#eab308",
+    "#22c55e",
+    "#14b8a6",
+    "#06b6d4",
+    "#3b82f6",
+    "#a855f7",
+    "#e879f9",
   ];
 
   let hash = 0;
@@ -33,17 +30,24 @@ const createCompanyMarker = (companyName) => {
   const initial = companyName.charAt(0).toUpperCase();
 
   const html = `
-    <div class="company-marker" style="background-color: ${color}; border: 2px solid rgba(255,255,255,0.9); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; font-size: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
-      ${initial}
-    </div>
+    <div style="
+      background: ${color};
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; color: white; font-size: 15px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      border: 2px solid rgba(255,255,255,0.2);
+      font-family: Inter, sans-serif;
+    ">${initial}</div>
   `;
 
   return L.divIcon({
     html,
     className: "",
-    iconSize: [40, 40],
-    iconAnchor: [20, 20],
-    popupAnchor: [0, -20],
+    iconSize: [36, 36],
+    iconAnchor: [18, 18],
+    popupAnchor: [0, -18],
   });
 };
 
@@ -54,17 +58,28 @@ function MapView({ city }) {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("");
 
+  const cityCoordinates = {
+    Bangalore: [12.9716, 77.5946],
+    Mumbai: [19.076, 72.8777],
+    Delhi: [28.7041, 77.1025],
+    Remote: [20.5937, 78.9629],
+  };
+
+  const mapCenter = cityCoordinates[city] || [20.5937, 78.9629];
+  const mapZoom = city && city !== "Remote" ? 11 : 5;
+
   useEffect(() => {
     fetchJobs();
+    // eslint-disable-next-line
   }, []);
 
   const fetchJobs = async () => {
     try {
       const response = await api.getJobs();
       setJobs(response.data);
-      setLoading(false);
     } catch (err) {
       console.error("Error fetching jobs:", err);
+    } finally {
       setLoading(false);
     }
   };
@@ -72,6 +87,7 @@ function MapView({ city }) {
   const groupJobsByCompany = () => {
     const grouped = {};
     jobs.forEach((job) => {
+      if (job.location !== city) return;
       if (!grouped[job.company]) {
         grouped[job.company] = {
           company: job.company,
@@ -87,19 +103,21 @@ function MapView({ city }) {
 
   const allCompanies = groupJobsByCompany();
   const filteredCompanies = allCompanies.filter((company) => {
+    const q = filter.toLowerCase();
     return (
-      company.company.toLowerCase().includes(filter.toLowerCase()) ||
-      company.location.toLowerCase().includes(filter.toLowerCase()) ||
-      company.jobs.some((job) =>
-        job.title.toLowerCase().includes(filter.toLowerCase()),
-      )
+      company.company.toLowerCase().includes(q) ||
+      company.location.toLowerCase().includes(q) ||
+      company.jobs.some((job) => job.title.toLowerCase().includes(q))
     );
   });
 
   if (loading)
     return (
       <div className="map-view">
-        <div className="loading-state">Loading opportunities...</div>
+        <div className="loading-state">
+          <div className="loading-spinner"></div>
+          Loading opportunities...
+        </div>
       </div>
     );
 
@@ -107,9 +125,10 @@ function MapView({ city }) {
     <div className="map-view">
       <div className="map-left">
         <MapContainer
-          center={[20.5937, 78.9629]}
-          zoom={5}
+          center={mapCenter}
+          zoom={mapZoom}
           className="leaflet-map"
+          zoomControl={false}
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -125,7 +144,12 @@ function MapView({ city }) {
                 click: () => setSelectedCompany(company),
               }}
             >
-              <Popup>{company.company}</Popup>
+              <Popup>
+                <strong>{company.company}</strong>
+                <br />
+                {company.jobs.length} open role
+                {company.jobs.length !== 1 ? "s" : ""}
+              </Popup>
             </Marker>
           ))}
         </MapContainer>
@@ -133,16 +157,19 @@ function MapView({ city }) {
 
       <div className="map-right">
         <div className="panel-header">
-          <h2>Startups in {city || "India"}</h2>
-          <p className="company-count">{filteredCompanies.length} companies</p>
+          <h2>Startups in {city}</h2>
+          <span className="company-count">
+            {filteredCompanies.length} companies
+          </span>
         </div>
 
         <div className="panel-search">
           <input
             type="text"
-            placeholder="Search companies..."
+            placeholder="Search companies or roles..."
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
+            id="company-search"
           />
         </div>
 
@@ -154,19 +181,18 @@ function MapView({ city }) {
                 className={`company-item ${selectedCompany?.company === company.company ? "active" : ""}`}
                 onClick={() => setSelectedCompany(company)}
               >
-                <div className="company-logo">
+                <div className="company-avatar">
                   {company.company.charAt(0).toUpperCase()}
                 </div>
                 <div className="company-info">
                   <h3>{company.company}</h3>
-                  <p className="location">{company.location}</p>
                   <div className="company-meta">
                     <span className="role-count">
-                      {company.jobs.length} roles
+                      {company.jobs.length} role
+                      {company.jobs.length !== 1 ? "s" : ""}
                     </span>
                     <div className="tech-tags">
                       {company.jobs
-                        .slice(0, 2)
                         .flatMap((j) => j.tags)
                         .slice(0, 2)
                         .map((tag, i) => (
@@ -174,17 +200,26 @@ function MapView({ city }) {
                             {tag}
                           </span>
                         ))}
+                      {company.jobs.flatMap((j) => j.tags).length > 2 && (
+                        <span className="tag">
+                          +{company.jobs.flatMap((j) => j.tags).length - 2} more
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>
               </div>
             ))
           ) : (
-            <div className="no-results">No results found</div>
+            <div className="no-results">
+              <p>No startups found</p>
+              <p className="no-results-hint">Try a different search term</p>
+            </div>
           )}
         </div>
       </div>
 
+      {/* Roles Modal */}
       {selectedCompany && !selectedJob && (
         <div
           className="roles-modal-overlay"
@@ -192,8 +227,13 @@ function MapView({ city }) {
         >
           <div className="roles-modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h2>{selectedCompany.company}</h2>
-              <p>{selectedCompany.location}</p>
+              <div className="modal-company-badge">
+                {selectedCompany.company.charAt(0).toUpperCase()}
+              </div>
+              <div>
+                <h2>{selectedCompany.company}</h2>
+                <p>{selectedCompany.location}</p>
+              </div>
               <button
                 className="close-btn"
                 onClick={() => setSelectedCompany(null)}
@@ -203,12 +243,15 @@ function MapView({ city }) {
             </div>
 
             <div className="roles-list">
-              <h3>Available Roles</h3>
+              <h3>Open Positions ({selectedCompany.jobs.length})</h3>
               {selectedCompany.jobs.map((job) => (
                 <div
                   key={job._id}
                   className="role-item"
-                  onClick={() => setSelectedJob(job)}
+                  onClick={() => {
+                    setSelectedJob(job);
+                    setSelectedCompany(null);
+                  }}
                 >
                   <div className="role-info">
                     <h4>{job.title}</h4>
@@ -222,6 +265,7 @@ function MapView({ city }) {
         </div>
       )}
 
+      {/* Job Details */}
       {selectedJob && (
         <JobDetails
           job={selectedJob}

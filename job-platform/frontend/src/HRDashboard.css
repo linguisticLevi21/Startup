@@ -1,53 +1,302 @@
 .hr-dashboard {
   display: flex;
-  flex-direction: column;
-  height: 100%;
-  background: #0a0e27;
-  color: #c9d1d9;
-}
-
-.hr-dashboard h1 {
-  padding: 2rem;
-  background: linear-gradient(135deg, #0f1429 0%, #1a2342 100%);
-  color: #c9d1d9;
-  font-size: 2rem;
-  margin: 0;
-  border-bottom: 1px solid #2d3748;
-}
-
-.dashboard-container {
-  display: grid;
-  grid-template-columns: 350px 1fr;
   flex: 1;
-  gap: 1rem;
-  padding: 1rem;
+  background-color: #0a0a0a;
   overflow: hidden;
+  height: 100vh;
 }
 
-.jobs-list {
-  background: #111827;
-  border-radius: 8px;
-  padding: 1.5rem;
+.hr-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100%;
+  color: #a1a1aa;
+  font-size: 16px;
+}
+
+/* JOBS PANEL - LEFT SIDE */
+.hr-jobs-panel {
+  flex: 0 0 300px;
+  background-color: #0f0f0f;
+  border-right: 1px solid #222;
   display: flex;
   flex-direction: column;
-  border: 1px solid #2d3748;
   overflow: hidden;
 }
 
-.jobs-list h2 {
-  font-size: 1.2rem;
-  color: #c9d1d9;
-  margin-bottom: 1rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #2d3748;
+.hr-panel-header {
+  padding: 16px;
+  border-bottom: 1px solid #222;
 }
 
-.jobs {
+.hr-panel-header h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 4px 0;
+}
+
+.hr-panel-header p {
+  font-size: 12px;
+  color: #a1a1aa;
+  margin: 0;
+}
+
+.job-count {
+  display: inline-block;
+  background-color: #181818;
+  color: #a1a1aa;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.hr-jobs-list {
   flex: 1;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 0.8rem;
+  gap: 8px;
+  padding: 12px;
+}
+
+.hr-job-card {
+  padding: 12px;
+  background-color: #141414;
+  border: 1px solid #222;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.hr-job-card:hover {
+  background-color: #1c1c1c;
+}
+
+.hr-job-card.active {
+  background-color: #1f1f1f;
+  border-color: #333;
+}
+
+.hr-job-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 6px;
+}
+
+.hr-job-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.hr-company {
+  font-size: 12px;
+  color: #a1a1aa;
+}
+
+.hr-applicant-badge {
+  background-color: #222;
+  color: #ffffff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+/* APPLICANTS PANEL - RIGHT SIDE */
+.hr-applicants-panel {
+  flex: 1;
+  background-color: #0a0a0a;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 16px;
+}
+
+.hr-applicants-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hr-applicant-card {
+  padding: 12px;
+  background-color: #141414;
+  border: 1px solid #222;
+  border-radius: 10px;
+}
+
+.hr-applicant-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.hr-applicant-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.hr-status-badge {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.hr-status-pending {
+  background-color: rgba(200, 200, 100, 0.2);
+  color: #fbbf24;
+}
+
+.hr-status-accepted {
+  background-color: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+}
+
+.hr-status-rejected {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+.hr-match-badge {
+  background-color: #22c55e;
+  color: #000000;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+.hr-applicant-email {
+  font-size: 12px;
+  color: #a1a1aa;
+  margin-bottom: 4px;
+}
+
+.hr-applicant-experience {
+  font-size: 12px;
+  color: #a1a1aa;
+  margin-bottom: 8px;
+}
+
+.hr-portfolio-link {
+  margin: 8px 0;
+}
+
+.hr-portfolio-link a {
+  font-size: 12px;
+  color: #6366f1;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.hr-portfolio-link a:hover {
+  color: #8b5cf6;
+  text-decoration: underline;
+}
+
+.hr-applicant-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.hr-skill-tag {
+  background-color: #1f1f1f;
+  color: #a1a1aa;
+  padding: 3px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+.hr-action-buttons {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.hr-accept-btn,
+.hr-reject-btn {
+  flex: 1;
+  padding: 6px 8px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.hr-accept-btn {
+  background-color: #22c55e;
+  color: #000000;
+}
+
+.hr-accept-btn:hover {
+  background-color: #16a34a;
+  opacity: 0.9;
+}
+
+.hr-reject-btn {
+  background-color: #ef4444;
+  color: #ffffff;
+}
+
+.hr-reject-btn:hover {
+  background-color: #dc2626;
+  opacity: 0.9;
+}
+
+.hr-no-applicants {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #a1a1aa;
+  font-size: 14px;
+}
+
+.hr-no-job-selected {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #a1a1aa;
+  font-size: 16px;
+}
+
+.hr-company-name {
+  font-size: 12px;
+  color: #a1a1aa;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .hr-dashboard {
+    flex-direction: column;
+  }
+
+  .hr-jobs-panel {
+    flex: 0 0 auto;
+    max-height: 200px;
+    border-right: none;
+    border-bottom: 1px solid #222;
+  }
+
+  .hr-applicants-panel {
+    flex: 1;
+  }
 }
 
 .job-card {

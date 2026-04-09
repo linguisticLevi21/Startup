@@ -1,0 +1,142 @@
+.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: #0a0a0a;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
+  overflow: hidden;
+}
+
+.login-container {
+  width: 100%;
+  max-width: 420px;
+  padding: 20px;
+}
+
+.login-box {
+  background: #141414;
+  border: 1px solid #222;
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.login-header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 8px 0;
+  letter-spacing: -0.5px;
+}
+
+.login-header p {
+  font-size: 14px;
+  color: #a1a1aa;
+  margin: 0;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-group input {
+  height: 38px;
+  padding: 0 12px;
+  background: #0f0f0f;
+  border: 1px solid #222;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #ffffff;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.form-group input::placeholder {
+  color: #666;
+}
+
+.form-group input:hover:not(:disabled) {
+  border-color: #333;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #444;
+  background: #111;
+  box-shadow: 0 0 0 1px #333;
+}
+
+.form-group input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.helper-text {
+  font-size: 12px;
+  color: #a1a1aa;
+  margin: 0;
+}
+
+.login-btn {
+  height: 40px;
+  background: #ffffff;
+  color: #0a0a0a;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 0.3px;
+  margin-top: 8px;
+}
+
+.login-btn:hover:not(:disabled) {
+  background: #e8e8e8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+}
+
+.login-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.login-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.login-footer {
+  text-align: center;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #222;
+}
+
+.login-footer p {
+  font-size: 12px;
+  color: #a1a1aa;
+  margin: 0;
+}

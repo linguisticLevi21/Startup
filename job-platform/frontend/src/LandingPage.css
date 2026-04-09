@@ -1,33 +1,30 @@
 .landing-page {
-  height: 100vh;
-  background: linear-gradient(135deg, #0a0e27 0%, #111827 100%);
-  color: #fff;
+  flex: 1;
+  background: linear-gradient(135deg, #0a0a0a 0%, #0f0f0f 100%);
   position: relative;
   overflow: hidden;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 .landing-grid-bg {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   background-image:
-    linear-gradient(rgba(88, 166, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(88, 166, 255, 0.05) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
   background-size: 50px 50px;
   pointer-events: none;
-  z-index: 1;
+  opacity: 0.5;
 }
 
 .landing-wrapper {
   display: flex;
-  gap: 100px;
-  max-width: 1500px;
+  gap: 80px;
+  max-width: 1400px;
   width: 100%;
-  padding: 0 80px;
+  padding: 60px 40px;
   position: relative;
   z-index: 2;
   align-items: center;
@@ -37,208 +34,179 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
+  gap: 32px;
+  max-width: 550px;
 }
 
-.landing-title {
-  font-size: 3.5rem;
-  font-weight: 900;
-  line-height: 1.15;
-  margin: 0;
-  letter-spacing: -0.5px;
-}
-
-.arena-text {
-  background: linear-gradient(135deg, #58a6ff 0%, #79c0ff 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  display: inline-block;
-}
-
-.features-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
-}
-
-.feature-box {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(88, 166, 255, 0.15);
-  border-radius: 8px;
-  padding: 1.25rem;
-  text-align: center;
-}
-
-.feature-icon {
-  font-size: 1.25rem;
-  margin-bottom: 0.5rem;
-  color: #58a6ff;
-}
-
-.feature-box h3 {
-  font-size: 0.9rem;
-  font-weight: 700;
-  margin: 0.5rem 0;
-  color: #c9d1d9;
-}
-
-.feature-box p {
-  font-size: 0.75rem;
-  color: #8b949e;
-  margin: 0;
-}
-
-.cities-section h2 {
-  font-size: 0.9rem;
+.landing-badge {
+  display: inline-flex;
+  width: fit-content;
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  padding: 10px 16px;
+  border-radius: 24px;
+  font-size: 12px;
   font-weight: 600;
-  color: #8b949e;
-  margin: 0 0 0.75rem 0;
-  text-transform: uppercase;
+  color: #a1a1aa;
+  gap: 8px;
   letter-spacing: 0.5px;
 }
 
-.cities-list {
+.landing-title {
+  font-size: 56px;
+  font-weight: 800;
+  line-height: 1.1;
+  margin: 0;
+  color: #ffffff;
+  letter-spacing: -1px;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline;
+}
+
+.landing-subtitle {
+  font-size: 17px;
+  color: #a1a1aa;
+  line-height: 1.6;
+  margin: 0;
+  font-weight: 400;
+}
+
+.landing-stats {
+  display: flex;
+  gap: 48px;
+  margin-top: 16px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.stat-item {
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 6px;
 }
 
-.city-btn {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(88, 166, 255, 0.1);
-  color: #c9d1d9;
-  padding: 0.65rem 1rem;
-  border-radius: 6px;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: all 0.2s ease;
-  font-weight: 500;
-  font-size: 0.9rem;
-}
-
-.city-btn:hover {
-  background: rgba(88, 166, 255, 0.15);
-  border-color: rgba(88, 166, 255, 0.3);
-  color: #58a6ff;
-}
-
-.job-badge {
-  background: rgba(88, 166, 255, 0.25);
-  padding: 0.2rem 0.6rem;
-  border-radius: 3px;
-  font-size: 0.7rem;
-  font-weight: 600;
-  color: #79c0ff;
-}
-
-.explore-btn {
-  background: linear-gradient(135deg, #58a6ff 0%, #79c0ff 100%);
-  color: #0b1117;
-  border: none;
-  padding: 0.9rem 2rem;
-  border-radius: 8px;
-  font-size: 0.95rem;
+.stat-value {
+  font-size: 32px;
   font-weight: 700;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  width: fit-content;
+  color: #ffffff;
 }
 
-.explore-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(88, 166, 255, 0.3);
+.stat-label {
+  font-size: 12px;
+  color: #a1a1aa;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-weight: 500;
 }
 
 .landing-right {
   flex: 1;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 450px;
+  flex-direction: column;
+  gap: 32px;
 }
 
-.illustration-box {
-  position: relative;
-  width: 100%;
-  height: 100%;
+.cities-heading {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
 }
 
-.illustration-content {
-  width: 100%;
-  height: 100%;
-  position: relative;
+.cities-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.city-card {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px;
+  background: linear-gradient(135deg, #141414 0%, #0f0f0f 100%);
+  border: 1px solid #222;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: inherit;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  min-height: 80px;
 }
 
-.circle {
-  position: absolute;
-  border-radius: 50%;
-  border: 1.5px solid rgba(88, 166, 255, 0.2);
+.city-card:hover {
+  background: linear-gradient(135deg, #1a1a1a 0%, #141414 100%);
+  border-color: #333;
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.1);
+  transform: translateY(-2px);
 }
 
-.circle-1 {
-  width: 280px;
-  height: 280px;
-  animation: float 8s ease-in-out infinite;
+.city-card:active {
+  transform: translateY(0);
 }
 
-.circle-2 {
-  width: 180px;
-  height: 180px;
-  animation: float 6s ease-in-out infinite 1s;
+.city-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
 }
 
-.circle-3 {
-  width: 80px;
-  height: 80px;
-  animation: float 4s ease-in-out infinite 2s;
+.city-card-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
 }
 
-.main-icon {
-  font-size: 3.5rem;
-  z-index: 10;
-  animation: pulse 3s ease-in-out infinite;
+.city-card-jobs {
+  font-size: 13px;
+  color: #a1a1aa;
 }
 
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(15px);
-  }
+.city-card-arrow {
+  font-size: 20px;
+  color: #6366f1;
 }
 
-@keyframes pulse {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.08);
-  }
+.city-emoji {
+  font-size: 20px;
+  flex-shrink: 0;
 }
 
-@media (max-width: 1200px) {
-  .landing-wrapper {
-    gap: 60px;
-    padding: 0 50px;
-  }
+.city-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+}
 
-  .landing-title {
-    font-size: 3rem;
-  }
+.city-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+}
 
-  .features-grid {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
+.city-jobs {
+  font-size: 12px;
+  color: #a1a1aa;
+}
+
+.city-arrow {
+  font-size: 16px;
+  color: #a1a1aa;
 }
 
 @media (max-width: 768px) {
@@ -248,28 +216,118 @@
     padding: 40px 20px;
   }
 
-  .landing-title {
-    font-size: 2.2rem;
-  }
-
+  .landing-left,
   .landing-right {
-    height: 300px;
+    flex: 100%;
   }
 
-  .circle-1 {
-    width: 200px;
-    height: 200px;
-  }
-  .circle-2 {
-    width: 130px;
-    height: 130px;
-  }
-  .circle-3 {
-    width: 60px;
-    height: 60px;
+  .landing-title {
+    font-size: 36px;
   }
 
-  .main-icon {
-    font-size: 2.5rem;
+  .landing-stats {
+    gap: 20px;
+  }
+}
+
+/* Right — City Cards */
+.landing-right {
+  flex: 0.8;
+}
+
+.cities-heading {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 0.85rem;
+}
+
+.cities-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.city-card {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition);
+  font-family: inherit;
+  text-align: left;
+  color: inherit;
+  width: 100%;
+}
+
+.city-card:hover {
+  border-color: var(--accent);
+  background: var(--bg-hover);
+  transform: translateX(4px);
+  box-shadow: 0 4px 16px var(--accent-glow);
+}
+
+.city-emoji {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-card);
+  border-radius: var(--radius-sm);
+}
+
+.city-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.city-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.city-jobs {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.city-arrow {
+  color: var(--text-muted);
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all var(--transition);
+}
+
+.city-card:hover .city-arrow {
+  color: var(--accent-light);
+  transform: translateX(3px);
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 900px) {
+  .landing-wrapper {
+    flex-direction: column;
+    gap: 2.5rem;
+    padding: 2rem 1.5rem;
+  }
+
+  .landing-title {
+    font-size: 2rem;
+  }
+
+  .landing-stats {
+    gap: 1.5rem;
   }
 }

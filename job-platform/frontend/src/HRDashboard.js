@@ -7,7 +7,6 @@ function HRDashboard() {
   const [selectedJob, setSelectedJob] = useState(null);
   const [applicants, setApplicants] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [sortBy, setSortBy] = useState("experience"); // Sort by experience only
 
   useEffect(() => {
     fetchJobs();
@@ -28,97 +27,141 @@ function HRDashboard() {
     setSelectedJob(job);
     try {
       const response = await api.getApplicants(job._id);
-      setApplicants(response.data);
+      // Sort by matchScore descending
+      const sorted = [...response.data].sort(
+        (a, b) => (b.matchScore || 0) - (a.matchScore || 0),
+      );
+      setApplicants(sorted);
     } catch (err) {
       console.error("Error fetching applicants:", err);
+      setApplicants([]);
     }
   };
 
-  const getSortedApplicants = () => {
-    return [...applicants].sort((a, b) => b.experience - a.experience);
+  const handleAccept = async (email) => {
+    try {
+      await api.acceptApplicant(selectedJob._id, email);
+      // Refresh applicants
+      handleSelectJob(selectedJob);
+    } catch (err) {
+      console.error("Error accepting applicant:", err);
+    }
   };
 
-  if (loading) return <div className="loading">Loading HR Dashboard...</div>;
+  const handleReject = async (email) => {
+    try {
+      await api.rejectApplicant(selectedJob._id, email);
+      // Refresh applicants
+      handleSelectJob(selectedJob);
+    } catch (err) {
+      console.error("Error rejecting applicant:", err);
+    }
+  };
+
+  if (loading) {
+    return <div className="hr-loading">Loading HR Dashboard...</div>;
+  }
 
   return (
     <div className="hr-dashboard">
-      <h1>HR Dashboard - Applicant Management</h1>
-
-      <div className="dashboard-container">
-        <div className="jobs-list">
-          <h2>Jobs</h2>
-          <div className="jobs">
-            {jobs.map((job) => (
-              <div
-                key={job._id}
-                className={`job-card ${selectedJob?._id === job._id ? "active" : ""}`}
-                onClick={() => handleSelectJob(job)}
-              >
-                <h3>{job.title}</h3>
-                <p>{job.company}</p>
-                <p className="location">📍 {job.location}</p>
-                <p className="applicant-count">
-                  {(job.applicants || []).length} applicant
-                  {(job.applicants || []).length !== 1 ? "s" : ""}
-                </p>
-              </div>
-            ))}
-          </div>
+      <div className="hr-jobs-panel">
+        <div className="hr-panel-header">
+          <h2>All Jobs</h2>
+          <span className="job-count">{jobs.length}</span>
         </div>
-
-        <div className="applicants-section">
-          {selectedJob ? (
-            <>
-              <div className="section-header">
-                <h2>{selectedJob.title} - Applicants</h2>
+        <div className="hr-jobs-list">
+          {jobs.map((job) => (
+            <div
+              key={job._id}
+              className={`hr-job-card ${selectedJob?._id === job._id ? "active" : ""}`}
+              onClick={() => handleSelectJob(job)}
+            >
+              <div className="hr-job-title">{job.title}</div>
+              <div className="hr-job-meta">
+                <span className="hr-company">{job.company}</span>
+                <span className="hr-applicant-badge">
+                  {job.applicants.length} 👥
+                </span>
               </div>
+            </div>
+          ))}
+        </div>
+      </div>
 
-              {applicants.length === 0 ? (
-                <p className="no-applicants">No applicants yet</p>
-              ) : (
-                <div className="applicants">
-                  {getSortedApplicants().map((applicant, idx) => (
-                    <div key={idx} className="applicant-card">
-                      <div className="applicant-header">
-                        <div>
-                          <h3>{applicant.name}</h3>
-                          <p className="email">{applicant.email}</p>
-                        </div>
-                      </div>
-
-                      <div className="applicant-info">
-                        <div className="info-item">
-                          <span className="label">Experience:</span>
-                          <span>{applicant.experience} years</span>
-                        </div>
-                      </div>
-
-                      <div className="skills">
-                        <p className="skills-label">Skills:</p>
-                        <div className="skill-tags">
-                          {applicant.skills.map((skill, idx) => (
-                            <span key={idx} className="skill-tag">
-                              {skill}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="applied-date">
-                        Applied:{" "}
-                        {new Date(applicant.appliedAt).toLocaleDateString()}
+      <div className="hr-applicants-panel">
+        {selectedJob ? (
+          <>
+            <div className="hr-panel-header">
+              <h2>{selectedJob.title}</h2>
+              <p className="hr-company-name">{selectedJob.company}</p>
+            </div>
+            <div className="hr-applicants-list">
+              {applicants.length > 0 ? (
+                applicants.map((applicant, idx) => (
+                  <div key={idx} className="hr-applicant-card">
+                    <div className="hr-applicant-header">
+                      <div className="hr-applicant-name">{applicant.name}</div>
+                      <div
+                        className={`hr-status-badge hr-status-${applicant.status || "pending"}`}
+                      >
+                        {applicant.status === "accepted" && "✓ Accepted"}
+                        {applicant.status === "rejected" && "✕ Rejected"}
+                        {applicant.status === "pending" && "⏳ Pending"}
                       </div>
                     </div>
-                  ))}
-                </div>
+                    <div className="hr-applicant-email">{applicant.email}</div>
+                    <div className="hr-applicant-experience">
+                      {applicant.experience} years exp
+                    </div>
+                    {applicant.portfolio && (
+                      <div className="hr-portfolio-link">
+                        <a
+                          href={applicant.portfolio}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          📎 Portfolio
+                        </a>
+                      </div>
+                    )}
+                    <div className="hr-applicant-skills">
+                      {applicant.skills.map((skill, i) => (
+                        <span key={i} className="hr-skill-tag">
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="hr-match-badge">
+                      {applicant.matchScore}% match
+                    </div>
+                    {applicant.status === "pending" && (
+                      <div className="hr-action-buttons">
+                        <button
+                          className="hr-accept-btn"
+                          onClick={() => handleAccept(applicant.email)}
+                        >
+                          ✓ Accept
+                        </button>
+                        <button
+                          className="hr-reject-btn"
+                          onClick={() => handleReject(applicant.email)}
+                        >
+                          ✕ Reject
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ))
+              ) : (
+                <div className="hr-no-applicants">No applicants yet</div>
               )}
-            </>
-          ) : (
-            <div className="no-selection">
-              <p>Select a job to view applicants</p>
             </div>
-          )}
-        </div>
+          </>
+        ) : (
+          <div className="hr-no-job-selected">
+            <p>Select a job to view applicants</p>
+          </div>
+        )}
       </div>
     </div>
   );

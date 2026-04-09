@@ -205,7 +205,9 @@ async function seedDatabase() {
               email: `applicant${jobId}-${a}@example.com`,
               skills: applicantSkills,
               experience: Math.floor(Math.random() * 8),
+              portfolio: "",
               matchScore: matchScore,
+              status: "pending",
               appliedAt: new Date(
                 Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000,
               ),
@@ -221,6 +223,7 @@ async function seedDatabase() {
           tags: jobTags,
           description:
             descriptions[Math.floor(Math.random() * descriptions.length)],
+          openings: 1 + Math.floor(Math.random() * 3),
           coordinates: { lat, lng },
           postedAt: new Date(
             Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000,

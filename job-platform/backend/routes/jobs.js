@@ -65,7 +65,7 @@ function calculateMatchScore(applicantSkills, jobTags) {
 // Apply for a job
 router.post("/apply", async (req, res) => {
   try {
-    const { name, email, skills, experience, jobId } = req.body;
+    const { name, email, skills, experience, portfolio, jobId } = req.body;
 
     if (!name || !email || !skills || experience === undefined || !jobId) {
       return res.status(400).json({ error: "Missing required fields" });
@@ -73,6 +73,16 @@ router.post("/apply", async (req, res) => {
 
     const job = await Job.findById(jobId);
     if (!job) return res.status(404).json({ error: "Job not found" });
+
+    // Check if openings are full
+    const acceptedCount = job.applicants.filter(
+      (a) => a.status === "accepted",
+    ).length;
+    if (acceptedCount >= job.openings) {
+      return res
+        .status(400)
+        .json({ error: "No openings available for this position" });
+    }
 
     const skillsArray = Array.isArray(skills)
       ? skills
@@ -86,7 +96,9 @@ router.post("/apply", async (req, res) => {
       email,
       skills: skillsArray,
       experience: parseInt(experience),
+      portfolio: portfolio || "",
       matchScore,
+      status: "pending",
     };
 
     // Check if already applied
@@ -102,6 +114,64 @@ router.post("/apply", async (req, res) => {
       message: "Application submitted successfully",
       matchScore,
     });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Accept an application
+router.post("/accept", async (req, res) => {
+  try {
+    const { jobId, email } = req.body;
+
+    if (!jobId || !email) {
+      return res.status(400).json({ error: "Missing jobId or email" });
+    }
+
+    const job = await Job.findById(jobId);
+    if (!job) return res.status(404).json({ error: "Job not found" });
+
+    const applicant = job.applicants.find((a) => a.email === email);
+    if (!applicant)
+      return res.status(404).json({ error: "Applicant not found" });
+
+    // Check if position is still available
+    const acceptedCount = job.applicants.filter(
+      (a) => a.status === "accepted",
+    ).length;
+    if (acceptedCount >= job.openings) {
+      return res.status(400).json({ error: "No openings available" });
+    }
+
+    applicant.status = "accepted";
+    await job.save();
+
+    res.json({ message: "Applicant accepted successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Reject an application
+router.post("/reject", async (req, res) => {
+  try {
+    const { jobId, email } = req.body;
+
+    if (!jobId || !email) {
+      return res.status(400).json({ error: "Missing jobId or email" });
+    }
+
+    const job = await Job.findById(jobId);
+    if (!job) return res.status(404).json({ error: "Job not found" });
+
+    const applicant = job.applicants.find((a) => a.email === email);
+    if (!applicant)
+      return res.status(404).json({ error: "Applicant not found" });
+
+    applicant.status = "rejected";
+    await job.save();
+
+    res.json({ message: "Applicant rejected successfully" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

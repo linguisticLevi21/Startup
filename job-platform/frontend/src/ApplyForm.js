@@ -25,7 +25,7 @@ function ApplyForm({ jobId, onClose, onSuccess }) {
     setMessage("");
 
     try {
-      const response = await api.applyForJob({
+      await api.applyForJob({
         ...formData,
         experience: parseInt(formData.experience),
         skills: formData.skills.split(",").map((s) => s.trim()),

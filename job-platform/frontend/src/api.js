@@ -7,6 +7,10 @@ const api = {
   getJobById: (id) => axios.get(`${API_BASE}/jobs/${id}`),
   getApplicants: (jobId) => axios.get(`${API_BASE}/jobs/${jobId}/applicants`),
   applyForJob: (data) => axios.post(`${API_BASE}/apply`, data),
+  acceptApplicant: (jobId, email) =>
+    axios.post(`${API_BASE}/accept`, { jobId, email }),
+  rejectApplicant: (jobId, email) =>
+    axios.post(`${API_BASE}/reject`, { jobId, email }),
 };
 
 export default api;

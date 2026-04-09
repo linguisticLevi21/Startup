@@ -1,5 +1,5 @@
 {
-  "env": "development",
+  "env": { "NODE_ENV": "development" },
   "ext": "js",
   "script": "server.js",
   "watch": ["server.js", "routes/", "models/"],
