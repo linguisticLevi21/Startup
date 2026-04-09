@@ -20,6 +20,62 @@
     sans-serif;
   overflow: hidden;
   position: relative;
+  flex-direction: column;
+}
+
+.login-branding {
+  text-align: center;
+  z-index: 2;
+  margin-bottom: 40px;
+  animation: fadeInDown 0.8s ease-out;
+}
+
+.brand-title {
+  font-size: 48px;
+  font-weight: 900;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -1px;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(90deg, #a78bfa, #818cf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.brand-motto {
+  font-size: 18px;
+  color: var(--text-secondary, #a3a3a3);
+  margin: 12px 0 0 0;
+  font-weight: 500;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.login-footer {
+  position: absolute;
+  bottom: 24px;
+  text-align: center;
+  width: 100%;
+  z-index: 2;
+  animation: slideUp 0.8s ease-out;
+}
+
+.login-footer p {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 14px;
+  margin: 0;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .login-page::before {

@@ -32,6 +32,13 @@ function Login({ onLogin }) {
 
   return (
     <div className="login-page">
+      <div className="login-branding">
+        <h1 className="brand-title">Startup Job Arena</h1>
+        <p className="brand-motto">
+          Direct access to India's top startup roles.
+        </p>
+      </div>
+
       <div className="login-container">
         <div className="login-box">
           <div className="login-header">
@@ -57,6 +64,10 @@ function Login({ onLogin }) {
             </button>
           </form>
         </div>
+      </div>
+
+      <div className="login-footer">
+        <p>Created by Shahadat and Abhishek</p>
       </div>
     </div>
   );

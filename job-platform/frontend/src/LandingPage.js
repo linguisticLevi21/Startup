@@ -15,7 +15,7 @@ function LandingPage({ onSelectCity }) {
       name: "Mumbai",
       code: "BOM",
       image:
-        "https://images.unsplash.com/photo-1522542455823-8cfb06bcefc2?q=80&w=1200&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1529253355930-ddbe423a2ac7?q=80&w=1200&auto=format&fit=crop",
     },
     {
       name: "Delhi",
@@ -27,7 +27,7 @@ function LandingPage({ onSelectCity }) {
       name: "Hyderabad",
       code: "HYD",
       image:
-        "https://images.unsplash.com/photo-1586295745778-958045db1e20?q=80&w=1200&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1574431535497-6a58396ecf7d?q=80&w=1200&auto=format&fit=crop",
     },
   ];
 
