@@ -6,6 +6,8 @@ import HRDashboard from "./HRDashboard";
 import { NavLogo } from "./NavLogo";
 import "./App.css";
 
+// Collaborator: Abhishek2327 - Joined the project
+
 const VALID_CITIES = ["Bangalore", "Mumbai", "Delhi", "Hyderabad", "Remote"];
 
 function App() {
