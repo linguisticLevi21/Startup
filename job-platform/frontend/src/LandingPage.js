@@ -1,5 +1,6 @@
 import React from "react";
 import "./LandingPage.css";
+import { NavLogo } from "./NavLogo";
 
 function LandingPage({ onSelectCity, user, onLogout }) {
   const cities = [
@@ -35,7 +36,7 @@ function LandingPage({ onSelectCity, user, onLogout }) {
       {/* ── HEADER ── */}
       <header className="lp-header">
         <div className="lp-header-left">
-          <img src="/logo.png" alt="Startup Arena Logo" className="lp-logo-img" />
+          <NavLogo />
         </div>
         <div className="lp-header-right">
           {user && (
