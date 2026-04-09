@@ -3,6 +3,7 @@ import Login from "./Login";
 import LandingPage from "./LandingPage";
 import MapView from "./MapView";
 import HRDashboard from "./HRDashboard";
+import { NavLogo } from "./NavLogo";
 import "./App.css";
 
 const VALID_CITIES = ["Bangalore", "Mumbai", "Delhi", "Hyderabad", "Remote"];
@@ -62,10 +63,7 @@ function App() {
         <>
           <nav className="navbar" id="main-navbar">
             <div className="nav-left">
-              <div className="nav-brand" onClick={() => setCurrentView("hr")}>
-                <div className="nav-logo-icon">S</div>
-                <span className="nav-logo-text">Startup Arena</span>
-              </div>
+              <NavLogo onClick={() => setCurrentView("hr")} />
             </div>
             <div className="nav-right">
               <div className="nav-role-badge" id="nav-role-badge">
@@ -95,10 +93,7 @@ function App() {
             <>
               <nav className="navbar" id="main-navbar">
                 <div className="nav-left">
-                  <div className="nav-brand" onClick={() => setCurrentView("landing")}>
-                    <div className="nav-logo-icon">S</div>
-                    <span className="nav-logo-text">Startup Arena</span>
-                  </div>
+                  <NavLogo onClick={() => setCurrentView("landing")} />
                   <button
                     className="nav-back-btn"
                     onClick={() => setCurrentView("landing")}

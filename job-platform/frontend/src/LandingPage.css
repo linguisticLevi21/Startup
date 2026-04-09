@@ -49,11 +49,6 @@
   gap: 12px;
 }
 
-.lp-logo-img {
-  height: 38px;
-  width: auto;
-  object-fit: contain;
-}
 
 .lp-header-right {
   display: flex;
