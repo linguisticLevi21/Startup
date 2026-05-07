@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Login from "./Login";
+import Register from "./Register";
 import LandingPage from "./LandingPage";
 import MapView from "./MapView";
 import HRDashboard from "./HRDashboard";
@@ -12,6 +13,7 @@ function App() {
   const [user, setUser] = useState(null);
   const [currentView, setCurrentView] = useState("landing");
   const [selectedCity, setSelectedCity] = useState(null);
+  const [authView, setAuthView] = useState("login"); // "login" or "register"
 
   // Check localStorage on mount
   useEffect(() => {
@@ -40,9 +42,12 @@ function App() {
 
   const handleLogout = () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("company");
+    localStorage.removeItem("token");
     setUser(null);
     setCurrentView("landing");
     setSelectedCity(null);
+    setAuthView("login");
   };
 
   const handleSelectCity = (city) => {
@@ -51,9 +56,22 @@ function App() {
     setCurrentView("map");
   };
 
-  // Not logged in → show login
+  // Not logged in → show login or register
   if (!user) {
-    return <Login onLogin={handleLogin} />;
+    if (authView === "register") {
+      return (
+        <Register
+          onLogin={handleLogin}
+          onSwitchToLogin={() => setAuthView("login")}
+        />
+      );
+    }
+    return (
+      <Login
+        onLogin={handleLogin}
+        onSwitchToRegister={() => setAuthView("register")}
+      />
+    );
   }
 
   return (
@@ -68,7 +86,7 @@ function App() {
             <div className="nav-right">
               <div className="nav-role-badge" id="nav-role-badge">
                 <span className="role-dot hr"></span>
-                HR Manager
+                {user.company ? `${user.company} HR` : "HR Manager"}
               </div>
               <button className="nav-logout-btn" onClick={handleLogout} id="nav-logout-btn">
                 Logout
@@ -105,7 +123,7 @@ function App() {
                 <div className="nav-right">
                   <div className="nav-role-badge" id="nav-role-badge">
                     <span className="role-dot applicant"></span>
-                    Applicant
+                    {user.name || "Applicant"}
                   </div>
                   <button className="nav-logout-btn" onClick={handleLogout} id="nav-logout-btn">
                     Logout

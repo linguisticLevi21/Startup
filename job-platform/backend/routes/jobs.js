@@ -28,6 +28,18 @@ router.get("/jobs/hr/:email", async (req, res) => {
   }
 });
 
+// Get jobs by exact company name (case-insensitive)
+router.get("/jobs/company/:companyName", async (req, res) => {
+  try {
+    const jobs = await Job.find({
+      company: { $regex: new RegExp("^" + req.params.companyName + "$", "i") },
+    }).sort({ postedAt: -1 });
+    res.json(jobs);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Get job by ID
 router.get("/jobs/:id", async (req, res) => {
   try {
@@ -193,4 +205,43 @@ router.post("/reject", async (req, res) => {
   }
 });
 
+// Update applicant status (Accept / Reject) via PUT
+router.put("/jobs/:jobId/applicants/:applicantId/status", async (req, res) => {
+  try {
+    const { jobId, applicantId } = req.params;
+    const { status } = req.body;
+
+    if (!status) {
+      return res.status(400).json({ error: "Missing status in request body" });
+    }
+
+    const normalizedStatus = status.toLowerCase();
+    if (!["accepted", "rejected"].includes(normalizedStatus)) {
+      return res
+        .status(400)
+        .json({ error: "Status must be 'Accepted' or 'Rejected'" });
+    }
+
+    const updatedJob = await Job.findOneAndUpdate(
+      { _id: jobId, "applicants._id": applicantId },
+      { $set: { "applicants.$.status": normalizedStatus } },
+      { new: true }
+    );
+
+    if (!updatedJob) {
+      return res.status(404).json({ error: "Job or applicant not found" });
+    }
+
+    const updatedApplicant = updatedJob.applicants.id(applicantId);
+
+    res.json({
+      message: `Applicant ${normalizedStatus} successfully`,
+      applicant: updatedApplicant,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;
+

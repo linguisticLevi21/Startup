@@ -211,6 +211,38 @@
   gap: 12px;
 }
 
+.hr-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  margin-bottom: 8px;
+  border-bottom: 1px solid rgba(34, 34, 34, 0.3);
+}
+
+.hr-filter-select {
+  padding: 8px 12px;
+  background: rgba(24, 24, 24, 0.6);
+  border: 1px solid rgba(34, 34, 34, 0.6);
+  border-radius: 8px;
+  color: #e5e5e5;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.hr-filter-select:focus {
+  outline: none;
+  border-color: var(--accent, #6366f1);
+}
+
+.hr-filter-count {
+  font-size: 12px;
+  color: #a1a1aa;
+  margin-left: auto;
+}
+
 .hr-applicant-card {
   padding: 14px;
   background: rgba(20, 20, 20, 0.5);

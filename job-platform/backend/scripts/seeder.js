@@ -2,14 +2,18 @@ require("dotenv").config({ path: __dirname + "/../.env" });
 const mongoose = require("mongoose");
 const { faker } = require("@faker-js/faker");
 const Job = require("../models/Job");
+const User = require("../models/User");
 
 // ── Constants ──────────────────────────────────────────────────────────
 
-const companies = [
-  "Razorpay", "Swiggy", "Zomato", "Flipkart", "CRED",
-  "Meesho", "Groww", "Zerodha", "Freshworks", "Postman",
-  "InMobi", "Dream11", "Unacademy", "OYO", "Ola",
-  "PhonePe", "Paytm", "Byju's", "Nykaa", "Zoho",
+// 3 primary companies — HR can log in as hr@flipkart.com, hr@amazon.com, hr@zomato.com
+const primaryCompanies = ["Flipkart", "Amazon", "Zomato"];
+
+// Additional companies for the general pool
+const otherCompanies = [
+  "Razorpay", "Swiggy", "CRED", "Meesho", "Groww",
+  "Zerodha", "Freshworks", "Postman", "InMobi", "Dream11",
+  "Unacademy", "OYO", "Ola", "PhonePe", "Paytm", "Nykaa", "Zoho",
 ];
 
 const cities = [
@@ -45,25 +49,15 @@ const skillSets = [
   ["Swift", "UIKit", "iOS", "Objective-C"],
   ["Kotlin", "Android", "Jetpack", "MVVM"],
   ["React Native", "JavaScript", "Mobile", "Redux"],
-  ["Solidity", "Ethereum", "Smart Contracts", "Web3"],
   ["AWS", "Azure", "GCP", "Cloud Architecture"],
   ["Redis", "Caching", "Performance", "Distributed Systems"],
   ["Elasticsearch", "Search", "Analytics", "Big Data"],
+  ["Apache Kafka", "Streaming", "Event Processing", "Microservices"],
 ];
 
 const salaryRanges = [
   "₹ 3-5 LPA", "₹ 5-8 LPA", "₹ 8-12 LPA",
   "₹ 12-18 LPA", "₹ 18-25 LPA", "₹ 25-35 LPA", "₹ 35-50 LPA",
-];
-
-const hrEmails = [
-  "hr@razorpay.com", "talent@swiggy.in", "careers@zomato.com",
-  "hiring@flipkart.com", "people@cred.club", "hr@meesho.io",
-  "recruit@groww.in", "jobs@zerodha.com", "hr@freshworks.com",
-  "talent@postman.com", "hr@inmobi.com", "careers@dream11.com",
-  "hiring@unacademy.com", "people@oyo.com", "hr@ola.com",
-  "recruit@phonepe.com", "hr@paytm.com", "careers@byjus.com",
-  "talent@nykaa.com", "hr@zoho.com",
 ];
 
 // ── Helpers ────────────────────────────────────────────────────────────
@@ -72,7 +66,6 @@ function pick(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-/** Return coords jittered ±0.05° around a city center (~5 km radius) */
 function jitter(city) {
   return {
     lat: city.lat + (Math.random() - 0.5) * 0.1,
@@ -80,11 +73,19 @@ function jitter(city) {
   };
 }
 
-function buildApplicants(jobTags, jobIndex) {
-  const applicants = [];
-  if (Math.random() > 0.5) return applicants; // ~50% of jobs get applicants
+/**
+ * Build 3-5 guaranteed applicants for a job.
+ * Every primary-company job gets applicants so the HR dashboard is never empty.
+ */
+function buildApplicants(jobTags, jobIndex, guaranteed = false) {
+  // For non-guaranteed jobs, 50% chance of no applicants
+  if (!guaranteed && Math.random() > 0.5) return [];
 
-  const count = 2 + Math.floor(Math.random() * 3); // 2-4
+  const count = guaranteed
+    ? 3 + Math.floor(Math.random() * 3)  // 3-5 for primary companies
+    : 2 + Math.floor(Math.random() * 3); // 2-4 for others
+
+  const applicants = [];
   for (let a = 0; a < count; a++) {
     let skills;
     if (Math.random() > 0.3) {
@@ -103,16 +104,46 @@ function buildApplicants(jobTags, jobIndex) {
 
     applicants.push({
       name: faker.person.fullName(),
-      email: `applicant${jobIndex}-${a}@example.com`,
+      email: faker.internet.email().toLowerCase(),
       skills,
-      experience: Math.floor(Math.random() * 8),
-      portfolio: "",
+      experience: 1 + Math.floor(Math.random() * 8),
+      portfolio: Math.random() > 0.4 ? faker.internet.url() : "",
+      resume: Math.random() > 0.3 ? faker.internet.url() + "/resume.pdf" : "",
       matchScore,
       status: "pending",
       appliedAt: faker.date.recent({ days: 7 }),
     });
   }
   return applicants;
+}
+
+function createJob(company, index, isExternal = false) {
+  const city = pick(cities);
+  const coords = jitter(city);
+  const role = pick(jobRoles);
+  const tags = pick(skillSets);
+  const isPrimary = primaryCompanies.includes(company);
+
+  return {
+    title: role,
+    company,
+    location: city.name,
+    salary: pick(salaryRanges),
+    tags,
+    description: faker.lorem.sentences(2),
+    isExternal,
+    externalUrl: isExternal
+      ? faker.internet.url() + "/careers/" + faker.helpers.slugify(role)
+      : "",
+    city: city.name,
+    jobRole: role,
+    experienceLevel: pick(experienceLevels),
+    hrEmail: `hr@${company.toLowerCase().replace(/[^a-z0-9]/g, "")}.com`,
+    openings: 1 + Math.floor(Math.random() * 3),
+    coordinates: coords,
+    postedAt: faker.date.recent({ days: 14 }),
+    applicants: buildApplicants(tags, index, isPrimary), // guaranteed for primary
+  };
 }
 
 // ── Seed Function ──────────────────────────────────────────────────────
@@ -122,48 +153,59 @@ async function seedDatabase() {
     await mongoose.connect(process.env.MONGO_URI);
     console.log("✅ Connected to MongoDB");
 
+    // ─── Seed User Accounts (bcrypt hashed via pre-save hook) ────────
+    await User.deleteMany({});
+    const accounts = [
+      { name: "Flipkart HR",  email: "hr@flipkart.com", password: "password123", role: "HR", company: "Flipkart" },
+      { name: "Amazon HR",    email: "hr@amazon.com",   password: "password123", role: "HR", company: "Amazon" },
+      { name: "Zomato HR",    email: "hr@zomato.com",   password: "password123", role: "HR", company: "Zomato" },
+      { name: "John Doe",     email: "john@gmail.com",  password: "password123", role: "Candidate", company: "" },
+      { name: "Jane Smith",   email: "jane@gmail.com",  password: "password123", role: "Candidate", company: "" },
+    ];
+    // Use User.create (not insertMany) so the pre-save bcrypt hook runs
+    for (const acc of accounts) {
+      await User.create(acc);
+    }
+    console.log(`👤 Seeded ${accounts.length} user accounts (bcrypt hashed)`);
+
+    // ─── Seed Jobs ──────────────────────────────────────────────────
     await Job.deleteMany({});
     console.log("🗑️  Cleared existing jobs");
 
-    const TOTAL = 300;
-    const EXTERNAL_COUNT = 15;
     const jobs = [];
+    let index = 0;
 
-    // Pre-pick which indices will be external
-    const externalIndices = new Set();
-    while (externalIndices.size < EXTERNAL_COUNT) {
-      externalIndices.add(Math.floor(Math.random() * TOTAL));
+    // ─── Phase 1: 50 guaranteed jobs for Flipkart, Amazon, Zomato ───
+    // ~17 each, with every job having 3-5 applicants
+    const PRIORITY_TOTAL = 50;
+    const perCompany = Math.floor(PRIORITY_TOTAL / primaryCompanies.length);
+    const remainder = PRIORITY_TOTAL - perCompany * primaryCompanies.length;
+
+    for (let c = 0; c < primaryCompanies.length; c++) {
+      const company = primaryCompanies[c];
+      const count = perCompany + (c < remainder ? 1 : 0);
+
+      for (let j = 0; j < count; j++) {
+        // Make 1 per company external
+        const isExternal = j === 0;
+        jobs.push(createJob(company, index, isExternal));
+        index++;
+      }
     }
 
-    for (let i = 0; i < TOTAL; i++) {
-      const city = pick(cities);
-      const coords = jitter(city);
-      const role = pick(jobRoles);
-      const tags = pick(skillSets);
+    // ─── Phase 2: 250 more jobs from all companies (including primary) ───
+    const GENERAL_TOTAL = 250;
+    const EXTERNAL_COUNT = 12;
+    const externalIndices = new Set();
+    while (externalIndices.size < EXTERNAL_COUNT) {
+      externalIndices.add(Math.floor(Math.random() * GENERAL_TOTAL));
+    }
+
+    const allCompanies = [...primaryCompanies, ...otherCompanies];
+    for (let i = 0; i < GENERAL_TOTAL; i++) {
       const isExternal = externalIndices.has(i);
-
-      const job = {
-        title: role,
-        company: pick(companies),
-        location: city.name,
-        salary: pick(salaryRanges),
-        tags,
-        description: faker.lorem.sentences(2),
-        isExternal,
-        externalUrl: isExternal
-          ? faker.internet.url() + "/careers/" + faker.helpers.slugify(role)
-          : "",
-        city: city.name,
-        jobRole: role,
-        experienceLevel: pick(experienceLevels),
-        hrEmail: pick(hrEmails),
-        openings: 1 + Math.floor(Math.random() * 3),
-        coordinates: coords,
-        postedAt: faker.date.recent({ days: 14 }),
-        applicants: buildApplicants(tags, i),
-      };
-
-      jobs.push(job);
+      jobs.push(createJob(pick(allCompanies), index, isExternal));
+      index++;
     }
 
     await Job.insertMany(jobs);
@@ -180,6 +222,13 @@ async function seedDatabase() {
     console.log(
       `👥 Total Applicants: ${jobs.reduce((s, j) => s + j.applicants.length, 0)}`
     );
+    console.log("\n🏢 Company breakdown (primary):");
+    for (const co of primaryCompanies) {
+      const coJobs = jobs.filter((j) => j.company === co);
+      const coApplicants = coJobs.reduce((s, j) => s + j.applicants.length, 0);
+      console.log(`   ${co}: ${coJobs.length} jobs, ${coApplicants} applicants`);
+    }
+    console.log(`\n💡 Try logging in as: hr@flipkart.com, hr@amazon.com, or hr@zomato.com`);
 
     mongoose.connection.close();
     process.exit(0);

@@ -7,7 +7,11 @@ function HRDashboard() {
   const [selectedJob, setSelectedJob] = useState(null);
   const [applicants, setApplicants] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [sortBy, setSortBy] = useState("recent"); // "recent" | "experience"
+  const [actionLoading, setActionLoading] = useState(null); // applicantId being acted upon
 
+  // Read company from localStorage (set during real JWT login)
+  const company = localStorage.getItem("company") || "";
   const loggedInEmail = (() => {
     try {
       const stored = localStorage.getItem("user");
@@ -18,15 +22,17 @@ function HRDashboard() {
   })();
 
   useEffect(() => {
+    if (!company) {
+      setLoading(false);
+      return;
+    }
     fetchJobs();
     // eslint-disable-next-line
   }, []);
 
   const fetchJobs = async () => {
     try {
-      const response = loggedInEmail
-        ? await api.getJobsByHR(loggedInEmail)
-        : await api.getJobs();
+      const response = await api.getJobsByCompany(company);
       setJobs(response.data);
       setLoading(false);
     } catch (err) {
@@ -37,49 +43,69 @@ function HRDashboard() {
 
   const handleSelectJob = async (job) => {
     setSelectedJob(job);
+    setSortBy("recent");
     try {
       const response = await api.getApplicants(job._id);
-      // Sort by matchScore descending
-      const sorted = [...response.data].sort(
-        (a, b) => (b.matchScore || 0) - (a.matchScore || 0),
-      );
-      setApplicants(sorted);
+      setApplicants(response.data);
     } catch (err) {
       console.error("Error fetching applicants:", err);
       setApplicants([]);
     }
   };
 
-  const handleAccept = async (email) => {
+  // ── Accept / Reject via PUT endpoint ──────────────────────────────
+  const handleAction = async (applicantId, status) => {
+    if (!selectedJob) return;
+    setActionLoading(applicantId);
     try {
-      await api.acceptApplicant(selectedJob._id, email);
+      await api.updateApplicantStatus(selectedJob._id, applicantId, status);
       // Refresh applicants
-      handleSelectJob(selectedJob);
+      const response = await api.getApplicants(selectedJob._id);
+      setApplicants(response.data);
     } catch (err) {
-      console.error("Error accepting applicant:", err);
+      console.error("Error updating status:", err);
+    } finally {
+      setActionLoading(null);
     }
   };
 
-  const handleReject = async (email) => {
-    try {
-      await api.rejectApplicant(selectedJob._id, email);
-      // Refresh applicants
-      handleSelectJob(selectedJob);
-    } catch (err) {
-      console.error("Error rejecting applicant:", err);
+  // ── Sort / Filter logic ───────────────────────────────────────────
+  const getFilteredApplicants = () => {
+    let list = [...applicants];
+
+    if (sortBy === "recent") {
+      list.sort(
+        (a, b) => new Date(b.appliedAt || 0) - new Date(a.appliedAt || 0)
+      );
+    } else if (sortBy === "experience") {
+      list = list.filter((a) => (a.experience || 0) > 2);
+      list.sort((a, b) => (b.experience || 0) - (a.experience || 0));
     }
+
+    return list;
   };
 
   if (loading) {
     return <div className="hr-loading">Loading HR Dashboard...</div>;
   }
 
+  if (!company) {
+    return (
+      <div className="hr-loading">
+        <p>⚠️ Not authenticated. Please log in with a valid HR account.</p>
+      </div>
+    );
+  }
+
+  const filteredApplicants = getFilteredApplicants();
+
   return (
     <div className="hr-dashboard">
       <div className="hr-jobs-panel">
         <div className="hr-panel-header">
-          <h2>Your Job Listings</h2>
-          <span className="job-count">{jobs.length}</span>
+          <h2>Welcome, {company} HR</h2>
+          <p className="hr-company-name">{loggedInEmail}</p>
+          <span className="job-count">{jobs.length} jobs</span>
         </div>
         <div className="hr-jobs-list">
           {jobs.map((job) => (
@@ -107,19 +133,36 @@ function HRDashboard() {
               <h2>{selectedJob.title}</h2>
               <p className="hr-company-name">{selectedJob.company}</p>
             </div>
+
+            {/* Filter bar */}
+            <div className="hr-filter-bar">
+              <select
+                className="hr-filter-select"
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+              >
+                <option value="recent">Sort by Recent</option>
+                <option value="experience">Filter: Exp &gt; 2 yrs</option>
+              </select>
+              <span className="hr-filter-count">
+                {filteredApplicants.length} applicant{filteredApplicants.length !== 1 ? "s" : ""}
+              </span>
+            </div>
+
             <div className="hr-applicants-list">
-              {applicants.length > 0 ? (
-                applicants.map((applicant, idx) => (
-                  <div key={idx} className="hr-applicant-card">
+              {filteredApplicants.length > 0 ? (
+                filteredApplicants.map((applicant) => (
+                  <div key={applicant._id || applicant.email} className="hr-applicant-card">
                     <div className="hr-applicant-header">
                       <div className="hr-applicant-name">{applicant.name}</div>
-                      <div
-                        className={`hr-status-badge hr-status-${applicant.status || "pending"}`}
-                      >
-                        {applicant.status === "accepted" && "✓ Accepted"}
-                        {applicant.status === "rejected" && "✕ Rejected"}
-                        {applicant.status === "pending" && "⏳ Pending"}
-                      </div>
+                      {applicant.status !== "pending" && (
+                        <div
+                          className={`hr-status-badge hr-status-${applicant.status}`}
+                        >
+                          {applicant.status === "accepted" && "✓ Accepted"}
+                          {applicant.status === "rejected" && "✕ Rejected"}
+                        </div>
+                      )}
                     </div>
                     <div className="hr-applicant-email">{applicant.email}</div>
                     <div className="hr-applicant-experience">
@@ -137,28 +180,29 @@ function HRDashboard() {
                       </div>
                     )}
                     <div className="hr-applicant-skills">
-                      {applicant.skills.map((skill, i) => (
+                      {applicant.skills?.map((skill, i) => (
                         <span key={i} className="hr-skill-tag">
                           {skill}
                         </span>
                       ))}
                     </div>
-                    <div className="hr-match-badge">
-                      {applicant.matchScore}% match
-                    </div>
+
+                    {/* Accept / Reject buttons — shown only for pending */}
                     {applicant.status === "pending" && (
                       <div className="hr-action-buttons">
                         <button
                           className="hr-accept-btn"
-                          onClick={() => handleAccept(applicant.email)}
+                          onClick={() => handleAction(applicant._id, "Accepted")}
+                          disabled={actionLoading === applicant._id}
                         >
-                          ✓ Accept
+                          {actionLoading === applicant._id ? "..." : "✓ Accept"}
                         </button>
                         <button
                           className="hr-reject-btn"
-                          onClick={() => handleReject(applicant.email)}
+                          onClick={() => handleAction(applicant._id, "Rejected")}
+                          disabled={actionLoading === applicant._id}
                         >
-                          ✕ Reject
+                          {actionLoading === applicant._id ? "..." : "✕ Reject"}
                         </button>
                       </div>
                     )}
