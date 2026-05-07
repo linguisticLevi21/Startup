@@ -244,28 +244,14 @@
 }
 
 .hr-applicant-card {
-  padding: 14px;
+  padding: 16px;
   background: rgba(20, 20, 20, 0.5);
   border: 1px solid rgba(34, 34, 34, 0.5);
   border-radius: 10px;
   animation: cardFadeIn 0.3s ease-out;
   transition: all var(--transition-md);
-  position: relative;
-  overflow: hidden;
-}
-
-.hr-applicant-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    circle,
-    rgba(99, 102, 241, 0.05) 0%,
-    transparent 70%
-  );
-  opacity: 0;
-  transition: opacity var(--transition-md);
-  pointer-events: none;
+  display: flex;
+  flex-direction: column;
 }
 
 .hr-applicant-card:hover {
@@ -274,9 +260,6 @@
   box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
 }
 
-.hr-applicant-card:hover::before {
-  opacity: 1;
-}
 
 .hr-applicant-header {
   display: flex;
