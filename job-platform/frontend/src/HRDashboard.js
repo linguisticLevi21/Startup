@@ -8,13 +8,25 @@ function HRDashboard() {
   const [applicants, setApplicants] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const loggedInEmail = (() => {
+    try {
+      const stored = localStorage.getItem("user");
+      return stored ? JSON.parse(stored).email : "";
+    } catch {
+      return "";
+    }
+  })();
+
   useEffect(() => {
     fetchJobs();
+    // eslint-disable-next-line
   }, []);
 
   const fetchJobs = async () => {
     try {
-      const response = await api.getJobs();
+      const response = loggedInEmail
+        ? await api.getJobsByHR(loggedInEmail)
+        : await api.getJobs();
       setJobs(response.data);
       setLoading(false);
     } catch (err) {
@@ -66,7 +78,7 @@ function HRDashboard() {
     <div className="hr-dashboard">
       <div className="hr-jobs-panel">
         <div className="hr-panel-header">
-          <h2>All Jobs</h2>
+          <h2>Your Job Listings</h2>
           <span className="job-count">{jobs.length}</span>
         </div>
         <div className="hr-jobs-list">

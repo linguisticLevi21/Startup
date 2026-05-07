@@ -22,6 +22,16 @@ const jobSchema = new mongoose.Schema({
   salary: { type: String, required: true },
   tags: [String],
   description: { type: String, required: true },
+  isExternal: { type: Boolean, default: false },
+  externalUrl: { type: String, default: "" },
+  city: { type: String, default: "" },
+  jobRole: { type: String, default: "" },
+  experienceLevel: {
+    type: String,
+    enum: ["Entry", "Mid", "Senior", "Lead", ""],
+    default: "",
+  },
+  hrEmail: { type: String, default: "" },
   openings: { type: Number, default: 1, min: 1 },
   coordinates: {
     lat: { type: Number, required: true },

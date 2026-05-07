@@ -2,10 +2,26 @@ const express = require("express");
 const router = express.Router();
 const Job = require("../models/Job");
 
-// Get all jobs
+// Get all jobs (with optional filters: city, jobRole, experienceLevel)
 router.get("/jobs", async (req, res) => {
   try {
-    const jobs = await Job.find().sort({ postedAt: -1 });
+    const { city, jobRole, experienceLevel } = req.query;
+    const filter = {};
+    if (city) filter.city = city;
+    if (jobRole) filter.jobRole = jobRole;
+    if (experienceLevel) filter.experienceLevel = experienceLevel;
+
+    const jobs = await Job.find(filter).sort({ postedAt: -1 });
+    res.json(jobs);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get jobs posted by a specific HR
+router.get("/jobs/hr/:email", async (req, res) => {
+  try {
+    const jobs = await Job.find({ hrEmail: req.params.email }).sort({ postedAt: -1 });
     res.json(jobs);
   } catch (err) {
     res.status(500).json({ error: err.message });

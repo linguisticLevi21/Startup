@@ -66,16 +66,24 @@ function JobDetails({ job, onClose, onApplySuccess }) {
 
           <button
             className="jd-apply-btn"
-            onClick={() => setShowApplyForm(true)}
+            onClick={() => {
+              if (job.isExternal && job.externalUrl) {
+                window.open(job.externalUrl, "_blank", "noopener,noreferrer");
+              } else {
+                setShowApplyForm(true);
+              }
+            }}
             disabled={!positionsAvailable}
             id="job-apply-btn"
             style={
               !positionsAvailable ? { opacity: 0.6, cursor: "not-allowed" } : {}
             }
           >
-            {positionsAvailable
-              ? "Apply for this Role →"
-              : "✕ No Openings Available"}
+            {!positionsAvailable
+              ? "✕ No Openings Available"
+              : job.isExternal
+                ? "Apply on External Site →"
+                : "Apply for this Role →"}
           </button>
         </div>
       </div>

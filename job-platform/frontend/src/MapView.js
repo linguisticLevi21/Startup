@@ -57,11 +57,15 @@ function MapView({ city }) {
   const [selectedJob, setSelectedJob] = useState(null);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("");
+  const [filterCity, setFilterCity] = useState("");
+  const [filterRole, setFilterRole] = useState("");
+  const [filterExp, setFilterExp] = useState("");
 
   const cityCoordinates = {
     Bangalore: [12.9716, 77.5946],
     Mumbai: [19.076, 72.8777],
     Delhi: [28.7041, 77.1025],
+    Hyderabad: [17.385, 78.4867],
     Remote: [20.5937, 78.9629],
   };
 
@@ -71,11 +75,16 @@ function MapView({ city }) {
   useEffect(() => {
     fetchJobs();
     // eslint-disable-next-line
-  }, []);
+  }, [filterCity, filterRole, filterExp]);
 
   const fetchJobs = async () => {
     try {
-      const response = await api.getJobs();
+      setLoading(true);
+      const filters = {};
+      if (filterCity) filters.city = filterCity;
+      if (filterRole) filters.jobRole = filterRole;
+      if (filterExp) filters.experienceLevel = filterExp;
+      const response = await api.getJobs(filters);
       setJobs(response.data);
     } catch (err) {
       console.error("Error fetching jobs:", err);
@@ -124,6 +133,51 @@ function MapView({ city }) {
   return (
     <div className="map-view">
       <div className="map-left">
+        <div className="filter-bar">
+          <select
+            value={filterCity}
+            onChange={(e) => setFilterCity(e.target.value)}
+            id="filter-city"
+          >
+            <option value="">All Cities</option>
+            <option value="Bangalore">Bangalore</option>
+            <option value="Delhi">Delhi</option>
+            <option value="Hyderabad">Hyderabad</option>
+            <option value="Mumbai">Mumbai</option>
+          </select>
+
+          <select
+            value={filterRole}
+            onChange={(e) => setFilterRole(e.target.value)}
+            id="filter-role"
+          >
+            <option value="">All Roles</option>
+            <option value="Frontend Developer">Frontend Developer</option>
+            <option value="Backend Developer">Backend Developer</option>
+            <option value="Full Stack Developer">Full Stack Developer</option>
+            <option value="ML Engineer">ML Engineer</option>
+            <option value="Data Analyst">Data Analyst</option>
+            <option value="DevOps Engineer">DevOps Engineer</option>
+            <option value="Product Manager">Product Manager</option>
+            <option value="UX Designer">UX Designer</option>
+            <option value="QA Engineer">QA Engineer</option>
+            <option value="Technical Lead">Technical Lead</option>
+            <option value="Intern">Intern</option>
+          </select>
+
+          <select
+            value={filterExp}
+            onChange={(e) => setFilterExp(e.target.value)}
+            id="filter-experience"
+          >
+            <option value="">All Levels</option>
+            <option value="Entry">Entry</option>
+            <option value="Mid">Mid</option>
+            <option value="Senior">Senior</option>
+            <option value="Lead">Lead</option>
+          </select>
+        </div>
+
         <MapContainer
           center={mapCenter}
           zoom={mapZoom}
