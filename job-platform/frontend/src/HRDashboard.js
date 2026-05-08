@@ -10,15 +10,16 @@ function HRDashboard() {
   const [sortBy, setSortBy] = useState("all");
   const [actionLoading, setActionLoading] = useState(null);
 
-  const company = localStorage.getItem("company") || "";
-  const loggedInEmail = (() => {
+  const storedUser = (() => {
     try {
       const stored = localStorage.getItem("user");
-      return stored ? JSON.parse(stored).email : "";
+      return stored ? JSON.parse(stored) : null;
     } catch {
-      return "";
+      return null;
     }
   })();
+  const company = storedUser?.company || localStorage.getItem("company") || "";
+  const loggedInEmail = storedUser?.email || "";
 
   useEffect(() => {
     if (!company) {
@@ -75,7 +76,7 @@ function HRDashboard() {
     switch (sortBy) {
       case "recent":
         list.sort(
-          (a, b) => new Date(b.appliedAt || 0) - new Date(a.appliedAt || 0)
+          (a, b) => new Date(b.appliedAt || 0) - new Date(a.appliedAt || 0),
         );
         break;
       case "experience-high":
@@ -176,7 +177,9 @@ function HRDashboard() {
                     >
                       {/* Name + status badge */}
                       <div className="hr-applicant-header">
-                        <div className="hr-applicant-name">{applicant.name}</div>
+                        <div className="hr-applicant-name">
+                          {applicant.name}
+                        </div>
                         {isActioned && (
                           <span
                             style={{
@@ -207,7 +210,9 @@ function HRDashboard() {
                       </div>
 
                       {/* Details */}
-                      <div className="hr-applicant-email">{applicant.email}</div>
+                      <div className="hr-applicant-email">
+                        {applicant.email}
+                      </div>
                       <div className="hr-applicant-experience">
                         {applicant.experience} years exp
                       </div>

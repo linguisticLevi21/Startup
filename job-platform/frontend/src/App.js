@@ -21,6 +21,9 @@ function App() {
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
+        if (parsed?.company && !localStorage.getItem("company")) {
+          localStorage.setItem("company", parsed.company);
+        }
         setUser(parsed);
         if (parsed.role === "hr") {
           setCurrentView("hr");
@@ -88,7 +91,11 @@ function App() {
                 <span className="role-dot hr"></span>
                 {user.company ? `${user.company} HR` : "HR Manager"}
               </div>
-              <button className="nav-logout-btn" onClick={handleLogout} id="nav-logout-btn">
+              <button
+                className="nav-logout-btn"
+                onClick={handleLogout}
+                id="nav-logout-btn"
+              >
                 Logout
               </button>
             </div>
@@ -125,7 +132,11 @@ function App() {
                     <span className="role-dot applicant"></span>
                     {user.name || "Applicant"}
                   </div>
-                  <button className="nav-logout-btn" onClick={handleLogout} id="nav-logout-btn">
+                  <button
+                    className="nav-logout-btn"
+                    onClick={handleLogout}
+                    id="nav-logout-btn"
+                  >
                     Logout
                   </button>
                 </div>
