@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import Login from "./Login";
 import Register from "./Register";
 import LandingPage from "./LandingPage";
@@ -6,6 +7,30 @@ import MapView from "./MapView";
 import HRDashboard from "./HRDashboard";
 import { NavLogo } from "./NavLogo";
 import "./App.css";
+
+// Animation variants
+const pageVariants = {
+  initial: {
+    opacity: 0,
+    y: 20,
+  },
+  in: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: "easeOut",
+    },
+  },
+  out: {
+    opacity: 0,
+    y: 20,
+    transition: {
+      duration: 0.3,
+      ease: "easeIn",
+    },
+  },
+};
 
 const VALID_CITIES = ["Bangalore", "Mumbai", "Delhi", "Hyderabad", "Remote"];
 
@@ -63,17 +88,31 @@ function App() {
   if (!user) {
     if (authView === "register") {
       return (
-        <Register
-          onLogin={handleLogin}
-          onSwitchToLogin={() => setAuthView("login")}
-        />
+        <motion.div
+          initial="initial"
+          animate="in"
+          exit="out"
+          variants={pageVariants}
+        >
+          <Register
+            onLogin={handleLogin}
+            onSwitchToLogin={() => setAuthView("login")}
+          />
+        </motion.div>
       );
     }
     return (
-      <Login
-        onLogin={handleLogin}
-        onSwitchToRegister={() => setAuthView("register")}
-      />
+      <motion.div
+        initial="initial"
+        animate="in"
+        exit="out"
+        variants={pageVariants}
+      >
+        <Login
+          onLogin={handleLogin}
+          onSwitchToRegister={() => setAuthView("register")}
+        />
+      </motion.div>
     );
   }
 
@@ -81,7 +120,14 @@ function App() {
     <div className="app">
       {user.role === "hr" ? (
         /* HR view keeps the full navbar */
-        <>
+        <motion.div
+          key="hr-view"
+          initial="initial"
+          animate="in"
+          exit="out"
+          variants={pageVariants}
+          style={{ display: "flex", flexDirection: "column", flex: 1 }}
+        >
           <nav className="navbar" id="main-navbar">
             <div className="nav-left">
               <NavLogo onClick={() => setCurrentView("hr")} />
@@ -103,10 +149,17 @@ function App() {
           <main className="app-content">
             <HRDashboard />
           </main>
-        </>
+        </motion.div>
       ) : (
         /* Applicant flow */
-        <>
+        <motion.div
+          key="applicant-view"
+          initial="initial"
+          animate="in"
+          exit="out"
+          variants={pageVariants}
+          style={{ display: "flex", flexDirection: "column", flex: 1 }}
+        >
           {currentView === "landing" && (
             <LandingPage
               onSelectCity={handleSelectCity}
@@ -146,7 +199,7 @@ function App() {
               </main>
             </>
           )}
-        </>
+        </motion.div>
       )}
     </div>
   );

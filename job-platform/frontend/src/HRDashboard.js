@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import api from "./api";
+import { motion } from "framer-motion";
 import "./HRDashboard.css";
 
 function HRDashboard() {
@@ -110,16 +111,31 @@ function HRDashboard() {
 
   return (
     <div className="hr-dashboard">
-      <div className="hr-jobs-panel">
+      <motion.div
+        className="hr-jobs-panel"
+        initial={{ x: -30, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
         <div className="hr-panel-header">
-          <h2>Welcome, {company} HR</h2>
-          <p className="hr-company-name">{loggedInEmail}</p>
+          <div className="hr-header-top">
+            <div className="hr-company-badge">
+              {company.charAt(0).toUpperCase()}
+            </div>
+            <div>
+              <h2>Welcome, {company} HR</h2>
+              <p className="hr-company-name">{loggedInEmail}</p>
+            </div>
+          </div>
           <span className="job-count">{jobs.length} jobs</span>
         </div>
         <div className="hr-jobs-list">
-          {jobs.map((job) => (
-            <div
+          {jobs.map((job, idx) => (
+            <motion.div
               key={job._id}
+              initial={{ y: 10, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: idx * 0.05 }}
               className={`hr-job-card ${selectedJob?._id === job._id ? "active" : ""}`}
               onClick={() => handleSelectJob(job)}
             >
@@ -130,17 +146,49 @@ function HRDashboard() {
                   {job.applicants.length} 👥
                 </span>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
-      </div>
+        <div className="hr-footer">
+          <p>
+            Built with 💻 by{" "}
+            <a
+              href="https://github.com/linguisticLevi21"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Shahadat
+            </a>{" "}
+            &{" "}
+            <a
+              href="https://github.com/Abhishek2327"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Abhishek
+            </a>
+          </p>
+        </div>
+      </motion.div>
 
-      <div className="hr-applicants-panel">
+      <motion.div
+        className="hr-applicants-panel"
+        initial={{ x: 30, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
         {selectedJob ? (
           <>
             <div className="hr-panel-header">
-              <h2>{selectedJob.title}</h2>
-              <p className="hr-company-name">{selectedJob.company}</p>
+              <div className="hr-job-header-info">
+                <div className="hr-job-badge">
+                  {selectedJob.title.charAt(0).toUpperCase()}
+                </div>
+                <div>
+                  <h2>{selectedJob.title}</h2>
+                  <p className="hr-company-name">{selectedJob.company}</p>
+                </div>
+              </div>
             </div>
 
             {/* ── Filter / Sort Bar ── */}
@@ -165,14 +213,17 @@ function HRDashboard() {
             {/* ── Applicant Cards ── */}
             <div className="hr-applicants-list">
               {sortedApplicants.length > 0 ? (
-                sortedApplicants.map((applicant) => {
+                sortedApplicants.map((applicant, idx) => {
                   const isActioned =
                     applicant.status === "accepted" ||
                     applicant.status === "rejected";
 
                   return (
-                    <div
+                    <motion.div
                       key={applicant._id || applicant.email}
+                      initial={{ y: 10, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ delay: idx * 0.05 }}
                       className="hr-applicant-card"
                     >
                       {/* Name + status badge */}
@@ -182,25 +233,11 @@ function HRDashboard() {
                         </div>
                         {isActioned && (
                           <span
-                            style={{
-                              padding: "4px 10px",
-                              borderRadius: "6px",
-                              fontSize: "11px",
-                              fontWeight: 600,
-                              backgroundColor:
-                                applicant.status === "accepted"
-                                  ? "rgba(34,197,94,0.15)"
-                                  : "rgba(239,68,68,0.15)",
-                              color:
-                                applicant.status === "accepted"
-                                  ? "#22c55e"
-                                  : "#ef4444",
-                              border: `1px solid ${
-                                applicant.status === "accepted"
-                                  ? "rgba(34,197,94,0.3)"
-                                  : "rgba(239,68,68,0.3)"
-                              }`,
-                            }}
+                            className={`hr-status-badge ${
+                              applicant.status === "accepted"
+                                ? "status-accepted"
+                                : "status-rejected"
+                            }`}
                           >
                             {applicant.status === "accepted"
                               ? "✓ Accepted"
@@ -241,38 +278,13 @@ function HRDashboard() {
 
                       {/* ── ACTION BUTTONS ── */}
                       {!isActioned && (
-                        <div
-                          style={{
-                            display: "flex",
-                            gap: "10px",
-                            marginTop: "16px",
-                            paddingTop: "12px",
-                            borderTop: "1px solid rgba(255,255,255,0.06)",
-                          }}
-                        >
+                        <div className="hr-action-buttons">
                           <button
                             onClick={() =>
                               handleAction(applicant._id, "Accepted")
                             }
                             disabled={actionLoading === applicant._id}
-                            style={{
-                              flex: 1,
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              gap: "6px",
-                              padding: "10px 16px",
-                              minHeight: "44px",
-                              background: "rgba(34, 197, 94, 0.15)",
-                              color: "#4ade80",
-                              border: "1px solid rgba(34, 197, 94, 0.35)",
-                              borderRadius: "8px",
-                              fontSize: "14px",
-                              fontWeight: 600,
-                              cursor: "pointer",
-                              fontFamily: "inherit",
-                              lineHeight: "1.2",
-                            }}
+                            className="btn-accept"
                           >
                             {actionLoading === applicant._id
                               ? "..."
@@ -283,24 +295,7 @@ function HRDashboard() {
                               handleAction(applicant._id, "Rejected")
                             }
                             disabled={actionLoading === applicant._id}
-                            style={{
-                              flex: 1,
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              gap: "6px",
-                              padding: "10px 16px",
-                              minHeight: "44px",
-                              background: "rgba(239, 68, 68, 0.15)",
-                              color: "#f87171",
-                              border: "1px solid rgba(239, 68, 68, 0.35)",
-                              borderRadius: "8px",
-                              fontSize: "14px",
-                              fontWeight: 600,
-                              cursor: "pointer",
-                              fontFamily: "inherit",
-                              lineHeight: "1.2",
-                            }}
+                            className="btn-reject"
                           >
                             {actionLoading === applicant._id
                               ? "..."
@@ -308,20 +303,23 @@ function HRDashboard() {
                           </button>
                         </div>
                       )}
-                    </div>
+                    </motion.div>
                   );
                 })
               ) : (
-                <div className="hr-no-applicants">No applicants yet</div>
+                <div className="no-applicants">
+                  <p>No applicants yet</p>
+                </div>
               )}
             </div>
           </>
         ) : (
-          <div className="hr-no-job-selected">
+          <div className="hr-no-selection">
+            <div className="no-selection-icon">📋</div>
             <p>Select a job to view applicants</p>
           </div>
         )}
-      </div>
+      </motion.div>
     </div>
   );
 }

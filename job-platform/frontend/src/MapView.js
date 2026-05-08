@@ -8,46 +8,49 @@ import "./MapView.css";
 // Company marker with colored initial
 const createCompanyMarker = (companyName) => {
   const colors = [
-    "#6366f1",
-    "#8b5cf6",
-    "#ec4899",
-    "#f43f5e",
-    "#f97316",
-    "#eab308",
-    "#22c55e",
-    "#14b8a6",
-    "#06b6d4",
-    "#3b82f6",
-    "#a855f7",
-    "#e879f9",
+    { bg: "#6366f1", light: "#818cf8" }, // Indigo
+    { bg: "#8b5cf6", light: "#a78bfa" }, // Violet
+    { bg: "#ec4899", light: "#f472b6" }, // Pink
+    { bg: "#f43f5e", light: "#fb7185" }, // Rose
+    { bg: "#f97316", light: "#fb923c" }, // Orange
+    { bg: "#eab308", light: "#facc15" }, // Yellow
+    { bg: "#22c55e", light: "#4ade80" }, // Green
+    { bg: "#14b8a6", light: "#2dd4bf" }, // Teal
+    { bg: "#06b6d4", light: "#22d3ee" }, // Cyan
+    { bg: "#3b82f6", light: "#60a5fa" }, // Blue
+    { bg: "#a855f7", light: "#c084fc" }, // Purple
+    { bg: "#e879f9", light: "#f0abfc" }, // Fuchsia
   ];
 
   let hash = 0;
   for (let i = 0; i < companyName.length; i++) {
     hash = companyName.charCodeAt(i) + ((hash << 5) - hash);
   }
-  const color = colors[Math.abs(hash) % colors.length];
+  const colorPair = colors[Math.abs(hash) % colors.length];
   const initial = companyName.charAt(0).toUpperCase();
 
   const html = `
     <div style="
-      background: ${color};
-      width: 36px; height: 36px;
-      border-radius: 8px;
+      background: linear-gradient(135deg, ${colorPair.bg} 0%, ${colorPair.light} 100%);
+      width: 44px; height: 44px;
+      border-radius: 12px;
       display: flex; align-items: center; justify-content: center;
-      font-weight: 700; color: white; font-size: 15px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-      border: 2px solid rgba(255,255,255,0.2);
-      font-family: Inter, sans-serif;
+      font-weight: 700; color: white; font-size: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5), 0 0 0 2px rgba(255,255,255,0.1);
+      border: 2px solid rgba(255,255,255,0.25);
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      transform: scale(1);
     ">${initial}</div>
   `;
 
   return L.divIcon({
     html,
-    className: "",
-    iconSize: [36, 36],
-    iconAnchor: [18, 18],
-    popupAnchor: [0, -18],
+    className: "custom-marker",
+    iconSize: [44, 44],
+    iconAnchor: [22, 22],
+    popupAnchor: [0, -22],
   });
 };
 
@@ -186,7 +189,7 @@ function MapView({ city }) {
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
           />
 
           {filteredCompanies.map((company) => (
